@@ -2040,21 +2040,6 @@
         font-size: 12px;
         color: #4a534e;
       }
-      .gvPlanPrice {
-        text-align: right;
-        flex-shrink: 0;
-      }
-      .gvPlanPrice strong {
-        display: block;
-        font-family: "Poppins", sans-serif;
-        font-size: 16px;
-        font-weight: 700;
-        color: #183d8e;
-      }
-      .gvPlanPrice span {
-        font-size: 11px;
-        color: #4a534e;
-      }
     </style>
   </head>
   <body>
@@ -2186,7 +2171,7 @@
                       <path d="M8 8h8M8 12h8M8 16h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
                     </svg>
                   </span>
-                  <span>Tasks</span>
+                  <span>Easy Earn</span>
                 </button>
                 <button class="gvQuickAction" type="button" data-action="withdraw">
                   <span class="gvQuickIcon">
@@ -2221,7 +2206,7 @@
               </section>
 
               <section class="gvTasksWrap">
-                <h3 class="gvSectionTitle gvTasksTitle">PREMIUM TASKS</h3>
+                <h3 class="gvSectionTitle gvTasksTitle">EASY EARN</h3>
                 <div id="gvPremiumList"></div>
               </section>
 
@@ -2442,10 +2427,6 @@
             <div>
               <h3>Evermore Membership</h3>
               <p class="gvPlanPerk">Earn up to ₦14,000 daily &middot; Lifetime access</p>
-            </div>
-            <div class="gvPlanPrice">
-              <strong id="gvPlanPrice">₦15,000</strong>
-              <span>One-time fee</span>
             </div>
           </button>
         </div>
@@ -2977,7 +2958,6 @@
         $("gvActivateBack").addEventListener("click", function () { closeOverlay(gate); });
         $("gvActivateNow").addEventListener("click", function () {
           closeOverlay(gate);
-          $("gvPlanPrice").textContent = E.formatNaira(E.config().membershipPrice);
           openOverlay(planChoice);
         });
         $("gvPlanChoiceClose").addEventListener("click", function () { closeOverlay(planChoice); });
