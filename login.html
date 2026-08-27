@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en-NG">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#183D8E" />
+    <title>Sign In | Evermore</title>
+    <meta name="description" content="Sign in to your Evermore account." />
+    <link rel="icon" href="favicon/favicon.ico" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="assets/app.css" />
+  </head>
+  <body>
+    <div class="site-wrapper">
+      <div class="site-main" role="main">
+        <div class="inner">
+          <div class="gvScreen active" id="loginScreen">
+            <header class="gvHeader">
+              <a class="gvLogo" href="index.html">
+                <img src="logo-with-text.svg" alt="Evermore" />
+              </a>
+              <a class="gvSigninBtn" href="signup.html">Create Account</a>
+            </header>
+
+            <section class="gvHero">
+              <p class="gvEyebrow">Welcome back</p>
+              <h1>Sign in to Evermore</h1>
+              <p>Access your dashboard, training tasks and rewards wallet.</p>
+            </section>
+
+            <section class="gvFormCard">
+              <h2 class="gvFormTitle">Sign In</h2>
+              <div class="gvError" id="gvLoginError"></div>
+              <form id="gvLoginForm" novalidate>
+                <div class="field">
+                  <label for="gvLoginPhone">Phone number or username</label>
+                  <input id="gvLoginPhone" name="phone" type="text" placeholder="e.g. 08123456789" autocomplete="username" required />
+                </div>
+                <div class="field">
+                  <label for="gvLoginPassword">Password</label>
+                  <div class="gvPasswordWrap">
+                    <input id="gvLoginPassword" name="password" type="password" placeholder="Your password" autocomplete="current-password" required />
+                    <button type="button" class="gvTogglePassword" id="gvLoginToggle" aria-label="Toggle password visibility">Show</button>
+                  </div>
+                </div>
+                <button type="submit" class="gvSubmitBtn" id="gvLoginBtn">
+                  <span class="gvSubmitSpinner"></span>
+                  <span class="gvSubmitLabel">Sign In</span>
+                </button>
+              </form>
+              <p class="gvFormFooter">
+                Don't have an account?
+                <a href="signup.html">Create one</a>
+              </p>
+            </section>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="assets/app.js?v=2"></script>
+    <script>
+      (function () {
+        var E = window.Evermore;
+        var form = document.getElementById("gvLoginForm");
+        var btn = document.getElementById("gvLoginBtn");
+        var errorBox = document.getElementById("gvLoginError");
+        var toggle = document.getElementById("gvLoginToggle");
+
+        toggle.addEventListener("click", function () {
+          var p = document.getElementById("gvLoginPassword");
+          var show = p.type === "password";
+          p.type = show ? "text" : "password";
+          toggle.textContent = show ? "Hide" : "Show";
+        });
+
+        function showError(msg) {
+          errorBox.textContent = msg;
+          errorBox.classList.add("show");
+        }
+
+        form.addEventListener("submit", function (e) {
+          e.preventDefault();
+          errorBox.classList.remove("show");
+
+          var identifier = document.getElementById("gvLoginPhone").value.trim().toLowerCase();
+          var password = document.getElementById("gvLoginPassword").value;
+
+          if (!identifier || !password) return showError("Enter your phone/username and password.");
+
+          var users = E.get(E.LS.users, []);
+          var user = users.find(function (u) {
+            return u.phone === identifier || u.username.toLowerCase() === identifier;
+          });
+
+          if (!user) return showError("No account found. Check your details or create an account.");
+          if (user.password !== password) return showError("Incorrect password. Please try again.");
+
+          E.set(E.LS.current, user);
+
+          btn.classList.add("loading");
+          btn.disabled = true;
+
+          setTimeout(function () {
+            window.location.href = "dashboard.html";
+          }, 600);
+        });
+
+        if (E.currentUser()) window.location.replace("dashboard.html");
+      })();
+    </script>
+  </body>
+</html>

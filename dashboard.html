@@ -1,0 +1,3295 @@
+<!DOCTYPE html>
+<html lang="en-NG">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#183D8E" />
+    <title>Dashboard | Evermore</title>
+    <meta name="description" content="Evermore member dashboard — training tasks, rewards wallet and withdrawals." />
+    <link rel="icon" href="favicon/favicon.ico" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="assets/app.css" />
+    <style>
+      /* neutralize app.css leaks so the dashboard matches Nextel's exact spacing */
+      .gvDashHeader { padding: 0; }
+      .gvSectionTitle { display: block; }
+      .gvTaskCard { margin-bottom: 0; }
+      .gvHistoryItem { margin-bottom: 0; }
+      .gvBalance { margin-top: 0; }
+      /* ====================================================== DASHBOARD SCREEN ====================================================== */
+      #dashboardScreen {
+        background: #fbf8f2;
+        padding: 22px 18px 130px;
+        min-height: 100dvh;
+      }
+      .gvDash {
+        width: 100%;
+        max-width: 980px;
+        margin: 0 auto;
+      }
+      .gvDashHeader {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 18px;
+        margin-bottom: 24px;
+      }
+      .gvDashUser {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        min-width: 0;
+      }
+      .gvDashLogo {
+        width: 44px;
+        height: 44px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        font-family: "Poppins", sans-serif;
+        font-weight: 700;
+        font-size: 16px;
+        flex-shrink: 0;
+        overflow: hidden;
+        box-shadow: 0 10px 24px rgba(24, 61, 142, 0.18);
+      }
+      .gvDashLogo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+      .gvDashInfo {
+        min-width: 0;
+      }
+      .gvDashInfo p {
+        margin: 0;
+        font-family: "Poppins", "Inter", sans-serif;
+        font-size: 16px;
+        font-weight: 600;
+        color: #0d2246;
+      }
+      @media (max-width: 640px) {
+        .gvDashInfo p { font-size: 15px; }
+      }
+      /* ====================================================== STORAGE / PROGRESS ====================================================== */
+      .gvStorage {
+        margin-bottom: 22px;
+      }
+      .gvStorageTop {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 16px;
+        margin-bottom: 12px;
+      }
+      .gvStorageTop span:first-child {
+        font-size: 16px;
+        font-weight: 500;
+        color: #183d8e;
+      }
+      .gvStorageTop span:last-child {
+        font-size: 15px;
+        font-weight: 600;
+        color: #4a534e;
+      }
+      .gvStorageBar {
+        width: 100%;
+        height: 10px;
+        border-radius: 999px;
+        background: #e8e7e2;
+        overflow: hidden;
+      }
+      .gvStorageFill {
+        width: 0%;
+        height: 100%;
+        border-radius: 999px;
+        background: linear-gradient(90deg, #183d8e, #1e4fa8);
+        transition: width 0.5s ease;
+      }
+      @media (max-width: 640px) {
+        .gvStorageTop span {
+          font-size: 14px !important;
+        }
+      }
+      /* ====================================================== TELEGRAM BANNER ====================================================== */
+      .gvTelegramBanner {
+        display: block;
+        position: relative;
+        margin: 24px 0 6px;
+        padding: 18px 18px 16px;
+        border-radius: 18px;
+        overflow: hidden;
+        text-decoration: none;
+        background: linear-gradient(135deg, #e8ecf7 0%, #dce4f5 55%, #e4ebf8 100%);
+        border: 1px solid rgba(24, 61, 142, 0.12);
+        box-shadow: 0 10px 24px rgba(24, 61, 142, 0.08);
+        cursor: pointer;
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
+      }
+      .gvTelegramBanner:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 14px 30px rgba(24, 61, 142, 0.14);
+      }
+      .gvTelegramBg {
+        position: absolute;
+        top: -60px;
+        right: -40px;
+        width: 140px;
+        height: 140px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(24, 61, 142, 0.1), transparent 70%);
+        pointer-events: none;
+      }
+      .gvTelegramContent {
+        position: relative;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+      .gvTelegramText {
+        flex: 1;
+        min-width: 0;
+      }
+      .gvTelegramText h3 {
+        margin: 0 0 3px;
+        font-family: "Poppins", sans-serif;
+        font-size: 14px;
+        font-weight: 700;
+        color: #0d2246;
+      }
+      .gvTelegramText p {
+        margin: 0;
+        font-size: 12px;
+        line-height: 1.4;
+        color: #5b6472;
+      }
+      .gvTelegramCTA {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        height: 32px;
+        padding: 0 14px;
+        border-radius: 999px;
+        background: #183d8e;
+        color: #fff;
+        flex-shrink: 0;
+      }
+      .gvTelegramCTA span {
+        font-family: "Poppins", sans-serif;
+        font-size: 10.5px;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+      }
+      .gvTelegramCTA svg {
+        width: 13px;
+        height: 13px;
+      }
+      @media (max-width: 640px) {
+        .gvTelegramBanner {
+          margin: 18px 0 6px;
+          padding: 9px 14px;
+          border-radius: 14px;
+        }
+        .gvTelegramContent { gap: 10px; }
+        .gvTelegramText h3 {
+          margin: 0;
+          font-size: 12.5px;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+        .gvTelegramText p { display: none; }
+        .gvTelegramCTA {
+          height: 26px;
+          padding: 0 11px;
+        }
+        .gvTelegramCTA span { font-size: 9.5px; }
+        .gvTelegramCTA svg { width: 11px; height: 11px; }
+      }
+      /* ====================================================== BALANCE ====================================================== */
+      .gvBalanceRow {
+        display: flex;
+        justify-content: flex-end;
+        margin: 14px 0 0;
+      }
+      .gvBalanceBox {
+        text-align: right;
+        flex-shrink: 0;
+      }
+      .gvBalanceLabel {
+        display: block;
+        margin-bottom: 8px;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 0.16em;
+        color: #183d8e;
+      }
+      .gvBalance {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        justify-content: center;
+        height: 54px;
+        padding: 0 18px;
+        background: #fff;
+        border: 1.5px solid rgba(24, 61, 142, 0.18);
+        border-radius: 18px;
+        box-shadow: 0 8px 22px rgba(24, 61, 142, 0.08);
+      }
+      .gvBalance svg {
+        width: 22px;
+        height: 22px;
+        color: #183d8e;
+        flex-shrink: 0;
+      }
+      .gvBalance strong {
+        font-family: "Poppins", sans-serif;
+        font-size: 24px;
+        font-weight: 700;
+        color: #0d2246;
+        line-height: 1;
+        white-space: nowrap;
+      }
+      @media (max-width: 640px) {
+        .gvBalance {
+          height: 48px;
+          padding: 0 14px;
+        }
+        .gvBalance strong {
+          font-size: 19px;
+        }
+        .gvBalanceLabel {
+          font-size: 10px;
+        }
+      }
+      /* ====================================================== VIRTUAL MEMBERSHIP CARD ====================================================== */
+      .gvCard {
+        position: relative;
+        width: 100%;
+        aspect-ratio: 1.6 / 1;
+        cursor: pointer;
+        margin: 22px 0 26px;
+        perspective: 1200px;
+      }
+      .gvCardInner {
+        position: absolute;
+        inset: 0;
+        transform-style: preserve-3d;
+        transition: transform 0.75s cubic-bezier(0.2, 0.8, 0.2, 1);
+      }
+      .gvCard.flipped .gvCardInner {
+        transform: rotateY(180deg);
+      }
+      .gvCardFace {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        padding: 16px 18px 14px;
+        border-radius: 20px;
+        overflow: hidden;
+        backface-visibility: hidden;
+        -webkit-backface-visibility: hidden;
+        transform: translateZ(0) rotateY(0deg);
+        background: linear-gradient(155deg, #1e4fa8 0%, #183d8e 55%, #0d2246 100%);
+        border: none;
+      }
+      .gvCardBack {
+        transform: translateZ(0) rotateY(180deg);
+        justify-content: space-between;
+        background: linear-gradient(155deg, #0d2246 0%, #183d8e 100%);
+      }
+      .gvCardFront::before {
+        content: "";
+        position: absolute;
+        top: -60px;
+        right: -50px;
+        width: 150px;
+        height: 150px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(224, 168, 87, 0.22), transparent 70%);
+      }
+      .gvCardFront::after {
+        content: "";
+        position: absolute;
+        bottom: -55px;
+        left: -45px;
+        width: 115px;
+        height: 115px;
+        border-radius: 50%;
+        background: radial-gradient(circle, rgba(255, 255, 255, 0.07), transparent 70%);
+      }
+      .gvCardTop {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        position: relative;
+        z-index: 2;
+      }
+      .gvCardBrand {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+      }
+      .gvCardLogo {
+        width: 34px;
+        height: 34px;
+        border-radius: 10px;
+        overflow: hidden;
+        background: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 3px 8px rgba(0, 0, 0, 0.18);
+      }
+      .gvCardLogo img {
+        width: 26px;
+        height: 26px;
+        object-fit: contain;
+        display: block;
+      }
+      .gvCardBrandText strong {
+        display: block;
+        font-family: "Poppins", sans-serif;
+        font-size: 12.5px;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+        color: #fff;
+      }
+      .gvCardBrandText span {
+        display: block;
+        margin-top: 1px;
+        font-size: 9px;
+        font-weight: 500;
+        color: rgba(255, 255, 255, 0.7);
+      }
+      .gvSignalWrap {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .gvSignalIcon {
+        width: 15px;
+        height: 15px;
+        color: rgba(255, 255, 255, 0.85);
+        flex-shrink: 0;
+      }
+      .gvEsim {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        height: 22px;
+        padding: 0 9px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.12);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        font-family: "Poppins", sans-serif;
+        font-size: 9px;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        color: #fbf8f2;
+      }
+      .gvChip {
+        margin: 12px 0 10px;
+        width: 36px;
+        height: 27px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        z-index: 2;
+      }
+      .gvChipPlate {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        border-radius: 5px;
+        background: linear-gradient(145deg, #ffe8a3 0%, #e6c264 28%, #b9822a 62%, #f4d97a 100%);
+        border: 1px solid #8a5c14;
+        box-shadow:
+          inset 0 1px 1px rgba(255, 255, 255, 0.55),
+          inset 0 -1px 2px rgba(0, 0, 0, 0.22),
+          0 3px 8px rgba(0, 0, 0, 0.28);
+        overflow: hidden;
+      }
+      .gvChipPlate .v {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 1.5px;
+        background: #9a6b16;
+      }
+      .gvChipPlate .v1 { left: 11px; }
+      .gvChipPlate .v2 { right: 11px; }
+      .gvChipPlate .h {
+        position: absolute;
+        left: 0;
+        right: 0;
+        height: 1.5px;
+        background: #9a6b16;
+      }
+      .gvChipPlate .h1 { top: 8px; }
+      .gvChipPlate .h2 { bottom: 8px; }
+      .gvChipPlate .c {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: 5px;
+        height: 5px;
+        margin-left: -2.5px;
+        margin-top: -2.5px;
+        border-radius: 50%;
+        background: #a36f19;
+      }
+      .gvChipPlate::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 35%;
+        background: linear-gradient(to bottom, rgba(255, 255, 255, 0.45), transparent);
+      }
+      .gvCardNumber {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 8px;
+        position: relative;
+        z-index: 2;
+      }
+      .gvCardNumber span {
+        flex: 1;
+        min-width: 120px;
+        font-family: "Poppins", sans-serif;
+        font-size: 15px;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        color: #fff;
+      }
+      .gvCardNumber button {
+        height: 22px;
+        padding: 0 10px;
+        border: none;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.12);
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        color: #fff;
+        font-size: 9.5px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.25s, transform 0.15s;
+      }
+      .gvCardNumber button:hover { background: rgba(255, 255, 255, 0.22); }
+      .gvCardNumber button:active { transform: scale(0.96); }
+      .gvCardBottom {
+        margin-top: auto;
+        padding-top: 10px;
+        border-top: 1px solid rgba(255, 255, 255, 0.12);
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 8px;
+        position: relative;
+        z-index: 2;
+      }
+      .gvCardBottom label {
+        display: block;
+        margin-bottom: 3px;
+        font-size: 7.5px;
+        font-weight: 600;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: rgba(255, 255, 255, 0.55);
+      }
+      .gvCardBottom strong {
+        display: block;
+        font-family: "Poppins", sans-serif;
+        font-size: 11px;
+        font-weight: 600;
+        color: #fff;
+      }
+      #gvAccountStatus.is-active { color: #3fb47a; }
+      #gvAccountStatus.is-inactive { color: #ff8f93; }
+      .gvFlipHint {
+        margin-top: 8px;
+        align-self: flex-end;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 9px;
+        font-weight: 600;
+        letter-spacing: 0.03em;
+        color: rgba(255, 255, 255, 0.5);
+        position: relative;
+        z-index: 2;
+      }
+      .gvFlipHint::after {
+        content: "";
+        width: 10px;
+        height: 10px;
+        background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M17 2.1l4 4-4 4"/><path d="M3 12.6v-2a4 4 0 0 1 4-4h14"/><path d="M7 21.9l-4-4 4-4"/><path d="M21 11.4v2a4 4 0 0 1-4 4H3"/></svg>');
+        background-size: contain;
+        background-repeat: no-repeat;
+        display: inline-block;
+      }
+      .gvBlackStrip {
+        height: 28px;
+        margin: -16px -18px 14px;
+        background: #111;
+      }
+      .gvBackContent {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+        flex: 1;
+      }
+      .gvQR {
+        width: 58px;
+        height: 58px;
+        padding: 5px;
+        border-radius: 10px;
+        background: #fff;
+        flex-shrink: 0;
+      }
+      .gvQR svg {
+        width: 100%;
+        height: 100%;
+        display: block;
+      }
+      .gvInviteArea {
+        flex: 1;
+        text-align: right;
+      }
+      .gvInviteArea h4 {
+        margin: 0 0 2px;
+        font-family: "Poppins", sans-serif;
+        font-size: 12px;
+        font-weight: 700;
+        color: #fff;
+      }
+      .gvInviteArea p {
+        margin: 0 0 6px;
+        font-size: 8.5px;
+        color: rgba(255, 255, 255, 0.72);
+      }
+      .gvInviteArea h2 {
+        margin: 0 0 8px;
+        font-family: "Poppins", sans-serif;
+        font-size: 14px;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        color: #fbf8f2;
+      }
+      .gvInviteArea button {
+        height: 24px;
+        padding: 0 12px;
+        border: none;
+        border-radius: 999px;
+        background: #fbf8f2;
+        color: #183d8e;
+        font-family: "Poppins", sans-serif;
+        font-size: 9.5px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: 0.25s;
+      }
+      .gvInviteArea button:hover { transform: translateY(-2px); }
+      @media (max-width: 480px) {
+        .gvCard { margin: 20px 0 24px; }
+        .gvCardFace { padding: 16px 18px 14px; border-radius: 22px; }
+        .gvCardNumber span { font-size: 13.5px; }
+      }
+      /* ====================================================== QUICK ACTIONS ====================================================== */
+      .gvQuickActions {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        margin: 26px 0;
+      }
+      .gvQuickAction {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 10px;
+        flex: 1;
+        border: none;
+        background: none;
+        padding: 0;
+        cursor: pointer;
+        font-family: "Plus Jakarta Sans", sans-serif;
+      }
+      .gvQuickIcon {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 56px;
+        height: 56px;
+        border-radius: 50%;
+        background: #fff;
+        border: 1px solid #e7ece8;
+        color: #0d2246;
+        box-shadow: 0 10px 22px rgba(24, 61, 142, 0.08);
+        transition: transform 0.25s, box-shadow 0.25s;
+      }
+      .gvQuickIcon svg {
+        width: 24px;
+        height: 24px;
+        stroke-width: 1.8;
+      }
+      .gvQuickAction:hover .gvQuickIcon {
+        transform: translateY(-3px);
+        box-shadow: 0 14px 26px rgba(24, 61, 142, 0.14);
+      }
+      .gvQuickAction span:last-child {
+        font-size: 13px;
+        font-weight: 500;
+        color: #23362e;
+        text-align: center;
+      }
+      @media (max-width: 640px) {
+        .gvQuickActions { gap: 8px; }
+        .gvQuickIcon { width: 50px; height: 50px; }
+        .gvQuickIcon svg { width: 21px; height: 21px; }
+        .gvQuickAction span:last-child { font-size: 11.5px; }
+      }
+      /* ====================================================== QUICK TASKS & AI BONUSES ====================================================== */
+      .gvTasksWrap {
+        margin: 28px 0;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+      .gvTasksTitle {
+        font-family: "Poppins", sans-serif;
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        color: rgba(13, 34, 70, 0.5);
+        margin: 0;
+      }
+      .gvTaskCard {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        width: 100%;
+        padding: 18px;
+        border: none;
+        border-radius: 22px;
+        background: linear-gradient(135deg, #183d8e, #1e4fa8);
+        box-shadow: 0 14px 32px rgba(24, 61, 142, 0.2);
+        cursor: pointer;
+        text-align: left;
+        transition: transform 0.25s;
+      }
+      .gvTaskCard:hover { transform: translateY(-2px); }
+      .gvTaskCard.completed { opacity: 0.65; }
+      #gvTaskList {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+      .gvTaskIcon {
+        flex-shrink: 0;
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        overflow: hidden;
+        background: #fff;
+        border: 1px solid #e7ece8;
+        box-shadow: 0 8px 20px rgba(24, 61, 142, 0.14);
+      }
+      .gvTaskIcon img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+      .gvTaskInfo {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+      .gvTaskInfo strong {
+        font-family: "Poppins", sans-serif;
+        font-size: 15px;
+        font-weight: 700;
+        color: #fff;
+      }
+      .gvTaskInfo span {
+        font-size: 12.5px;
+        line-height: 1.5;
+        color: rgba(255, 255, 255, 0.7);
+      }
+      .gvTaskReward {
+        flex-shrink: 0;
+        padding: 10px 14px;
+        border-radius: 12px;
+        background: rgba(255, 255, 255, 0.12);
+        font-family: "Poppins", sans-serif;
+        font-size: 13.5px;
+        font-weight: 700;
+        color: #f0c98d;
+        white-space: nowrap;
+      }
+      .gvTaskReward small {
+        display: block;
+        font-family: "Inter", sans-serif;
+        font-size: 9.5px;
+        font-weight: 500;
+        color: rgba(255, 255, 255, 0.6);
+      }
+      @media (max-width: 480px) {
+        .gvTaskCard { padding: 14px; gap: 12px; }
+        .gvTaskIcon { width: 42px; height: 42px; }
+        .gvTaskInfo strong { font-size: 14px; }
+        .gvTaskInfo span { font-size: 11.5px; }
+        .gvTaskReward { font-size: 12px; padding: 8px 10px; }
+      }
+      /* ====================================================== PREMIUM TASKS ====================================================== */
+      #gvPremiumList {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+      .gvPremiumCard {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        width: 100%;
+        padding: 18px;
+        border: none;
+        border-radius: 22px;
+        background: linear-gradient(135deg, #0d2246, #183d8e);
+        border: 1px solid rgba(224, 168, 87, 0.4);
+        box-shadow: 0 14px 32px rgba(13, 34, 70, 0.22);
+        cursor: pointer;
+        text-align: left;
+        transition: transform 0.25s;
+        position: relative;
+      }
+      .gvPremiumCard:hover { transform: translateY(-2px); }
+      .gvPremiumCard .gvTaskInfo strong {
+        font-family: "Poppins", sans-serif;
+        font-size: 15px;
+        font-weight: 700;
+        color: #fff;
+      }
+      .gvPremiumCard .gvTaskInfo span {
+        font-size: 12.5px;
+        line-height: 1.5;
+        color: rgba(255, 255, 255, 0.7);
+      }
+      .gvPremiumCard .gvStartTask {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 6px;
+        flex-shrink: 0;
+        min-width: 0;
+      }
+      .gvPremiumCard .gvStartTask .gvRate {
+        font-family: "Poppins", sans-serif;
+        font-size: 15px;
+        font-weight: 700;
+        color: #fff;
+        white-space: nowrap;
+      }
+      .gvPremiumCard .gvStartBtn {
+        height: 34px;
+        padding: 0 14px;
+        border: none;
+        border-radius: 999px;
+        background: #e0a857;
+        color: #0d2246;
+        font-family: "Poppins", sans-serif;
+        font-size: 11px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: transform 0.25s, background 0.25s;
+      }
+      .gvPremiumCard .gvStartBtn:hover {
+        background: #f0c98d;
+        transform: translateY(-1px);
+      }
+      @media (max-width: 480px) {
+        .gvPremiumCard { padding: 14px; gap: 12px; }
+        .gvPremiumCard .gvTaskIcon { width: 42px; height: 42px; }
+        .gvPremiumCard .gvTaskInfo strong { font-size: 14px; }
+        .gvPremiumCard .gvTaskInfo span { font-size: 11.5px; }
+      }
+      /* ====================================================== FAVORITES + WORKFLOWS ====================================================== */
+      .gvContactsWrap {
+        margin: 30px 0 34px;
+        padding: 20px;
+        background: #fff;
+        border-radius: 28px;
+        border: 1px solid #e7ece8;
+        box-shadow: 0 14px 36px rgba(24, 61, 142, 0.08);
+      }
+      .gvSectionTitle {
+        margin: 0 0 20px;
+        font-family: "Poppins", sans-serif;
+        font-size: 15px;
+        font-weight: 700;
+        letter-spacing: 0.14em;
+        color: #0d2246;
+      }
+      .gvFavorites {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 16px;
+        margin-bottom: 28px;
+      }
+      .gvFavItem {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        flex: 1;
+        border: none;
+        background: none;
+        padding: 0;
+        cursor: pointer;
+        font-family: "Inter", sans-serif;
+      }
+      .gvFavAvatar {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: #fff;
+        border: 1px solid #e7ece8;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 10px 22px rgba(24, 61, 142, 0.18);
+        transition: transform 0.25s;
+      }
+      .gvFavAvatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+      .gvFavItem:hover .gvFavAvatar { transform: translateY(-3px); }
+      .gvFavItem span {
+        margin-top: 10px;
+        font-size: 14px;
+        font-weight: 500;
+        color: #23362e;
+      }
+      .gvFavAdd .gvFavAvatar {
+        background: transparent;
+        border: 2px dashed rgba(24, 61, 142, 0.28);
+        box-shadow: none;
+        color: #183d8e;
+      }
+      .gvFavAdd svg { width: 22px; height: 22px; }
+      .gvPhonebookHeader {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 18px;
+      }
+      .gvPhonebookHeader .gvSectionTitle { margin-bottom: 0; }
+      #gvWorkflowList {
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+      .gvWorkflow {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 14px;
+        padding: 14px;
+        background: #f8fbf9;
+        border: 1px solid #e5ece8;
+        border-radius: 18px;
+      }
+      .gvWorkflowLeft {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex: 1;
+        min-width: 0;
+      }
+      .gvWorkflowAvatar {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        background: #fff;
+        border: 1px solid #e7ece8;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+      .gvWorkflowAvatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        display: block;
+      }
+      .gvWorkflowInfo {
+        display: flex;
+        flex-direction: column;
+        min-width: 0;
+      }
+      .gvWorkflowInfo h4 {
+        margin: 0;
+        font-family: "Poppins", sans-serif;
+        font-size: 13.5px;
+        font-weight: 700;
+        color: #0d2246;
+      }
+      .gvWorkflowInfo p {
+        margin: 3px 0 0;
+        font-size: 11.5px;
+        line-height: 1.4;
+        color: #7b8087;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+      .gvWorkflowInfo .gvIdle {
+        display: inline-block;
+        margin-top: 4px;
+        font-size: 10px;
+        font-weight: 600;
+        color: #9aa3b0;
+      }
+      .gvWorkflowInfo .gvIdle.done {
+        color: #3fb47a;
+      }
+      .gvStartTask {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 4px;
+        flex-shrink: 0;
+      }
+      .gvStartTask .gvRate {
+        font-size: 11px;
+        font-weight: 600;
+        color: #183d8e;
+      }
+      .gvStartBtn {
+        height: 34px;
+        padding: 0 14px;
+        border: none;
+        border-radius: 999px;
+        background: #183d8e;
+        color: #fff;
+        font-family: "Poppins", sans-serif;
+        font-size: 11px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: transform 0.25s, background 0.25s;
+      }
+      .gvStartBtn:hover { background: #0d2246; transform: translateY(-1px); }
+      .gvPhonebookNote {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        margin-top: 20px;
+        padding-top: 16px;
+        border-top: 1px solid #e5ece8;
+      }
+      .gvPhonebookNote svg {
+        width: 18px;
+        height: 18px;
+        color: #183d8e;
+        flex-shrink: 0;
+        margin-top: 2px;
+      }
+      .gvPhonebookNote p {
+        margin: 0;
+        font-size: 12px;
+        line-height: 1.6;
+        color: #7b8087;
+      }
+      /* ====================================================== YOUR CURRENT PLAN ====================================================== */
+      .gvPlanStatusWrap {
+        margin: 20px 0 0;
+        padding: 24px;
+        border-radius: 28px;
+        background: linear-gradient(135deg, #183d8e, #1e4fa8);
+        box-shadow: 0 18px 40px rgba(24, 61, 142, 0.2);
+        color: #fff;
+      }
+      .gvPlanStatusTitle {
+        color: rgba(255, 255, 255, 0.55);
+        margin-bottom: 18px;
+      }
+      .gvPlanStatusRow {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+      .gvPlanStatusLabel {
+        font-size: 15px;
+        color: rgba(255, 255, 255, 0.75);
+      }
+      .gvPlanStatusValue {
+        font-family: "Poppins", sans-serif;
+        font-size: 16px;
+        font-weight: 700;
+        color: #f0c98d;
+      }
+      .gvPlanStatusValue.is-inactive { color: #ff8f93; }
+      .gvPlanStatusValue.is-free { color: #ff8f93; }
+      .gvPlanStatusValue.is-active { color: #3fb47a; }
+      .gvPlanStatusText {
+        margin: 8px 0 0;
+        font-size: 13px;
+        line-height: 1.65;
+        color: rgba(255, 255, 255, 0.7);
+        max-width: 280px;
+      }
+      .gvPlanStatusDivider {
+        height: 1px;
+        background: rgba(255, 255, 255, 0.12);
+        margin: 20px 0;
+      }
+      .gvHistoryItem {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 14px;
+        padding: 14px 16px;
+        background: #f8fbf9;
+        border: 1px solid #e5ece8;
+        border-radius: 18px;
+      }
+      .gvHistoryLeft {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        flex: 1;
+        min-width: 0;
+      }
+      .gvHistoryAvatar {
+        width: 46px;
+        height: 46px;
+        border-radius: 50%;
+        background: #183d8e;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "Poppins", sans-serif;
+        font-size: 16px;
+        font-weight: 700;
+        color: #fff;
+        flex-shrink: 0;
+      }
+      .gvHistoryInfo {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        min-width: 0;
+      }
+      .gvHistoryInfo h4 {
+        margin: 0;
+        font-family: "Poppins", sans-serif;
+        font-size: 15px;
+        font-weight: 700;
+        color: #0d2246;
+      }
+      .gvHistoryInfo p {
+        margin: 4px 0 0;
+        font-size: 12px;
+        color: #7b8087;
+      }
+      .gvHistoryAmount {
+        text-align: right;
+        flex-shrink: 0;
+      }
+      .gvHistoryAmount strong {
+        display: block;
+        font-family: "Poppins", sans-serif;
+        font-size: 15px;
+        color: #183d8e;
+      }
+      .gvHistoryAmount span {
+        display: block;
+        margin-top: 3px;
+        font-size: 11px;
+        color: #88918d;
+      }
+      @media (max-width: 640px) {
+        .gvHistoryItem { padding: 12px; }
+        .gvHistoryAvatar { width: 42px; height: 42px; font-size: 14px; }
+        .gvHistoryInfo h4 { font-size: 13.5px; }
+        .gvHistoryAmount strong { font-size: 13.5px; }
+      }
+      /* ====================================================== BOTTOM NAV ====================================================== */
+      .gvBottomNav {
+        position: fixed;
+        left: 50%;
+        bottom: 18px;
+        transform: translateX(-50%);
+        width: min(94%, 480px);
+        height: 76px;
+        background: rgba(255, 255, 255, 0.96);
+        backdrop-filter: blur(18px);
+        -webkit-backdrop-filter: blur(18px);
+        border: 1.5px solid rgba(24, 61, 142, 0.18);
+        border-radius: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+        box-shadow: 0 18px 40px rgba(24, 61, 142, 0.16);
+        z-index: 9999999;
+      }
+      .gvNavItem {
+        flex: 1;
+        height: 100%;
+        border: none;
+        background: none;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 6px;
+        cursor: pointer;
+        color: #5f6b65;
+        transition: color 0.25s;
+        position: relative;
+        font-family: "Inter", sans-serif;
+      }
+      .gvNavItem svg {
+        width: 24px;
+        height: 24px;
+        stroke-width: 2.2;
+      }
+      .gvNavItem span {
+        font-size: 12.5px;
+        font-weight: 800;
+        letter-spacing: 0.01em;
+      }
+      .gvNavItem.active {
+        color: #183d8e;
+      }
+      .gvNavItem.active svg {
+        transform: scale(1.12);
+        stroke-width: 2.5;
+      }
+      @media (max-width: 640px) {
+        .gvBottomNav { height: 70px; bottom: 12px; border-radius: 20px; }
+        .gvNavItem svg { width: 22px; height: 22px; }
+        .gvNavItem span { font-size: 11.5px; }
+      }
+      /* ====================================================== TASK MODAL / OVERLAYS ====================================================== */
+      .gvOverlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(13, 34, 70, 0.5);
+        z-index: 10000000;
+        align-items: flex-end;
+        justify-content: center;
+      }
+      .gvOverlay.active { display: flex; }
+      .gvOverlay.popup {
+        align-items: center;
+        padding: 20px;
+      }
+      .gvOverlay.popup .gvOverlayCard {
+        max-width: 380px;
+        border-radius: 24px;
+        padding: 30px 24px 28px;
+      }
+      .gvOverlay.popup .gvHandle { display: none; }
+      .gvOverlayCard {
+        background: #fff;
+        width: 100%;
+        max-width: 480px;
+        border-radius: 24px 24px 0 0;
+        padding: 20px 20px 28px;
+        max-height: 90vh;
+        overflow-y: auto;
+      }
+      .gvOverlayCard .gvHandle {
+        width: 42px;
+        height: 4px;
+        border-radius: 4px;
+        background: #e8e7e2;
+        margin: -4px auto 18px;
+      }
+      .gvModalHead {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 6px;
+      }
+      .gvModalHead h3 {
+        margin: 0;
+        font-family: "Poppins", sans-serif;
+        font-size: 17px;
+        font-weight: 700;
+        color: #0d2246;
+        flex: 1;
+      }
+      .gvCloseBtn {
+        width: 34px;
+        height: 34px;
+        border-radius: 12px;
+        border: 1px solid #e7ece8;
+        background: #fff;
+        color: #5b6472;
+        font-size: 15px;
+        cursor: pointer;
+      }
+      .gvTaskBody p { font-size: 13.5px; color: #4a534e; line-height: 1.6; margin: 10px 0 0; }
+      .gvTaskSnippet {
+        background: #f6f4ee;
+        border: 1px solid #e8e7e2;
+        border-radius: 14px;
+        padding: 14px;
+        font-size: 14px;
+        line-height: 1.7;
+        margin: 14px 0;
+      }
+      .gvTaskWrong {
+        display: none;
+        align-items: center;
+        gap: 8px;
+        background: #fdecec;
+        border: 1px solid #f5c2c4;
+        color: #b3261e;
+        font-size: 13px;
+        font-weight: 600;
+        border-radius: 12px;
+        padding: 11px 14px;
+        margin: 12px 0;
+      }
+      .gvTaskWrong.show { display: flex; }
+      .gvTaskWrong svg {
+        width: 18px;
+        height: 18px;
+        flex-shrink: 0;
+      }
+      .gvTaskWrong .gvRetryBtn {
+        margin-left: auto;
+        border: none;
+        background: #b3261e;
+        color: #fff;
+        border-radius: 999px;
+        padding: 6px 14px;
+        font-size: 12px;
+        font-weight: 700;
+        cursor: pointer;
+      }
+      .gvOption {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        width: 100%;
+        text-align: left;
+        background: #fff;
+        border: 1.5px solid #e7ece8;
+        border-radius: 14px;
+        padding: 13px 16px;
+        font-size: 14px;
+        font-weight: 500;
+        color: #111;
+        margin-bottom: 10px;
+        cursor: pointer;
+        transition: border-color 0.15s ease, background 0.15s ease;
+      }
+      .gvOption:hover { border-color: #1e4fa8; }
+      .gvOption.selected { border-color: #183d8e; background: #eef1f9; }
+      .gvCaptchaPrompt {
+        font-size: 14px;
+        font-weight: 600;
+        color: #0d2246;
+        margin: 10px 0 14px;
+        text-align: center;
+      }
+      .gvCaptchaGrid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 6px;
+        max-width: 340px;
+        margin: 0 auto;
+      }
+      .gvCaptchaTile {
+        position: relative;
+        aspect-ratio: 1 / 1;
+        border: 2px solid #e8e7e2;
+        border-radius: 10px;
+        background-size: cover;
+        background-position: center;
+        background-color: #f2f1ec;
+        cursor: pointer;
+        padding: 0;
+        overflow: hidden;
+        transition: border-color 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease;
+      }
+      .gvCaptchaTile:hover { border-color: #1e4fa8; }
+      .gvCaptchaTile.selected {
+        border-color: #183d8e;
+        box-shadow: 0 0 0 3px rgba(24, 61, 142, 0.22);
+        transform: scale(1.03);
+      }
+      .gvCaptchaTile.selected::after {
+        content: "✓";
+        position: absolute;
+        top: 4px;
+        right: 4px;
+        width: 20px;
+        height: 20px;
+        border-radius: 50%;
+        background: #183d8e;
+        color: #fff;
+        font-size: 13px;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .gvTaskImage {
+        width: 100%;
+        border-radius: 14px;
+        margin: 14px 0;
+        border: 1px solid #e8e7e2;
+      }
+      .gvSubmitTask {
+        width: 100%;
+        border: none;
+        border-radius: 999px;
+        padding: 16px 24px;
+        font-family: "Poppins", sans-serif;
+        font-weight: 700;
+        font-size: 15px;
+        color: #fff;
+        background: linear-gradient(135deg, #183d8e, #0d2246);
+        margin-top: 10px;
+        cursor: pointer;
+      }
+      .gvSubmitTask:disabled { opacity: 0.5; cursor: not-allowed; }
+      .gvBigIcon { width: 70px; height: 70px; border-radius: 20px; margin: 0 auto 16px; display: flex; align-items: center; justify-content: center; }
+      .gvGoldIcon { background: #fdf3e3; color: #b8842e; }
+      .gvSuccessIcon { background: #e3f5ec; color: #0f5a3c; }
+      .gvGateRow { display: flex; gap: 12px; margin-top: 18px; }
+      .gvGateRow .gvSubmitBtn { flex: 1; }
+      .gvSubmitBtn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        border: none;
+        border-radius: 999px;
+        padding: 15px 24px;
+        font-family: "Poppins", sans-serif;
+        font-weight: 700;
+        font-size: 15px;
+        color: #fff;
+        background: linear-gradient(135deg, #183d8e, #0d2246);
+        cursor: pointer;
+        transition: opacity 0.15s ease, transform 0.1s ease;
+      }
+      .gvSubmitBtn:active { transform: scale(0.99); }
+      .gvFormFooter {
+        text-align: center;
+        margin-top: 16px;
+        font-size: 13px;
+        color: #5b6472;
+      }
+      .gvFormFooter button {
+        border: none;
+        background: none;
+        color: #9aa3b0;
+        cursor: pointer;
+        font-size: 13px;
+      }
+      /* ====================================================== WITHDRAW PAGE ====================================================== */
+      #gvWithdrawPage {
+        background: #fbf8f2;
+        padding: 22px 18px 130px;
+        min-height: 100dvh;
+      }
+      #gvProfilePage { padding: 0; }
+      .gvPageHeader {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 18px 0 16px;
+      }
+      .gvPageHeader h2 {
+        margin: 0;
+        font-family: "Poppins", sans-serif;
+        font-size: 19px;
+        font-weight: 700;
+        color: #0d2246;
+        flex: 1;
+      }
+      .gvBackBtn {
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        border: 1px solid #e7ece8;
+        background: #fff;
+        color: #0d2246;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+      }
+      /* ====================================================== WITHDRAW PAGE ====================================================== */
+      .gvWithdrawHeader {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 26px;
+      }
+      .gvWithdrawBack {
+        width: 48px;
+        height: 48px;
+        border: none;
+        border-radius: 18px;
+        background: #fff;
+        border: 1px solid rgba(24, 61, 142, 0.08);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #183d8e;
+        box-shadow: 0 10px 24px rgba(24, 61, 142, 0.08);
+        cursor: pointer;
+      }
+      .gvWithdrawBack svg { width: 20px; height: 20px; }
+      .gvWithdrawHeader h2 {
+        margin: 0;
+        font-family: "Poppins", sans-serif;
+        font-size: 24px;
+        font-weight: 700;
+        color: #0d2246;
+      }
+      .gvWithdrawAvatar {
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+        background: linear-gradient(135deg, #183d8e, #0d2246);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+        box-shadow: 0 12px 30px rgba(24, 61, 142, 0.22);
+      }
+      .gvWithdrawAvatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+      .gvWithdrawCard {
+        position: relative;
+        overflow: hidden;
+        padding: 30px;
+        border-radius: 32px;
+        background:
+          radial-gradient(circle at top right, rgba(255, 255, 255, 0.18) 0, rgba(255, 255, 255, 0.08) 26%, transparent 27%),
+          linear-gradient(135deg, #183d8e, #1e4fa8, #0d2246);
+        box-shadow: 0 22px 45px rgba(24, 61, 142, 0.22);
+        margin-bottom: 24px;
+        color: #fff;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        text-align: left;
+      }
+      .gvWithdrawGlow {
+        position: absolute;
+        left: -90px;
+        bottom: -90px;
+        width: 220px;
+        height: 220px;
+        border-radius: 50%;
+        background: rgba(224, 168, 87, 0.14);
+        filter: blur(30px);
+      }
+      .gvWithdrawCircle {
+        position: absolute;
+        right: -70px;
+        top: -70px;
+        width: 240px;
+        height: 240px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.08);
+      }
+      .gvWithdrawCard span {
+        display: block;
+        font-size: 13px;
+        letter-spacing: 0.28em;
+        font-weight: 600;
+        opacity: 0.88;
+        margin-bottom: 12px;
+        text-align: left;
+      }
+      .gvWithdrawCard h1 {
+        margin: 0;
+        font-family: "Poppins", sans-serif;
+        font-size: 30px;
+        font-weight: 600;
+        line-height: 1;
+        text-align: left;
+      }
+      .gvWithdrawMinimum {
+        margin-top: 24px;
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 12px 20px;
+        border-radius: 999px;
+        background: rgba(255, 255, 255, 0.14);
+        backdrop-filter: blur(10px);
+        font-weight: 600;
+        font-size: 15px;
+        align-self: flex-start;
+      }
+      .gvWithdrawMinimum svg {
+        width: 20px;
+        height: 20px;
+        color: #e0a857;
+        flex-shrink: 0;
+      }
+      .gvWithdrawStatus {
+        background: #fff;
+        border-radius: 28px;
+        padding: 24px;
+        border: 1px solid rgba(24, 61, 142, 0.08);
+        box-shadow: 0 14px 34px rgba(24, 61, 142, 0.08);
+        margin-bottom: 22px;
+        transition: 0.35s;
+      }
+      .gvWithdrawStatus.locked { border-left: 6px solid #b8842e; }
+      .gvWithdrawStatus.unlocked { border-left: 6px solid #0f5a3c; }
+      .gvWithdrawStatusTitle {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-family: "Poppins", sans-serif;
+        font-size: 19px;
+        font-weight: 600;
+        text-align: left;
+        margin-bottom: 12px;
+      }
+      .gvWithdrawStatusTitle svg { width: 22px; height: 22px; flex-shrink: 0; display: block; }
+      .gvWithdrawStatus.locked .gvWithdrawStatusTitle { color: #b8842e; }
+      .gvWithdrawStatus.unlocked .gvWithdrawStatusTitle { color: #0f5a3c; }
+      #gvWithdrawStatusText {
+        margin: 0;
+        font-size: 14px;
+        text-align: left;
+        line-height: 1.8;
+        color: #6e7673;
+      }
+      .gvWithdrawProgress {
+        background: #fff;
+        border-radius: 28px;
+        padding: 20px;
+        border: 1px solid rgba(24, 61, 142, 0.08);
+        box-shadow: 0 14px 34px rgba(24, 61, 142, 0.08);
+        margin-bottom: 24px;
+      }
+      .gvWithdrawProgressTop {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 18px;
+      }
+      .gvWithdrawProgressTop span { font-size: 15px; text-align: left; color: #6e7673; }
+      .gvWithdrawProgressTop strong { font-size: 24px; font-family: "Poppins", sans-serif; color: #183d8e; }
+      .gvProgressBar {
+        height: 12px;
+        border-radius: 999px;
+        overflow: hidden;
+        background: #eef1f9;
+      }
+      #gvProgressFill {
+        width: 0%;
+        height: 100%;
+        border-radius: 999px;
+        background: linear-gradient(90deg, #e0a857, #183d8e);
+        transition: 1s ease;
+      }
+      #gvWithdrawRemaining {
+        margin: 18px 0 0;
+        text-align: left;
+        font-size: 15px;
+        line-height: 1.6;
+        color: #6e7673;
+      }
+      .gvWithdrawBtn,
+      .gvWithdrawHistoryBtn {
+        width: 100%;
+        height: 50px;
+        border: none;
+        border-radius: 999px;
+        font-family: "Poppins", sans-serif;
+        font-size: 16px;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 12px;
+        cursor: pointer;
+        transition: 0.25s;
+      }
+      .gvWithdrawBtn {
+        background: linear-gradient(135deg, #f0c98d, #e0a857);
+        color: #0d2246;
+        box-shadow: 0 16px 34px rgba(224, 168, 87, 0.28);
+        margin-bottom: 20px;
+      }
+      .gvWithdrawBtn:hover { transform: translateY(-2px); }
+      .gvWithdrawHistoryBtn {
+        background: #fff;
+        border: 1px solid rgba(24, 61, 142, 0.08);
+        color: #183d8e;
+        margin-bottom: 24px;
+      }
+      .gvWithdrawHistoryBtn svg { width: 20px; height: 20px; min-width: 20px; flex-shrink: 0; display: block; }
+      .gvWithdrawSection { margin-top: 6px; }
+      .gvWithdrawSectionTitle {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 18px;
+      }
+      .gvWithdrawSectionTitle svg { width: 16px; height: 16px; color: #183d8e; }
+      .gvWithdrawSectionTitle span {
+        font-family: "Poppins", sans-serif;
+        font-size: 17px;
+        font-weight: 600;
+        color: #0d2246;
+      }
+      .gvWithdrawEmpty {
+        background: #fff;
+        border-radius: 26px;
+        padding: 56px 24px;
+        text-align: center;
+        border: 1px solid rgba(24, 61, 142, 0.08);
+        box-shadow: 0 14px 34px rgba(24, 61, 142, 0.08);
+      }
+      .gvWithdrawEmpty svg { width: 40px; height: 40px; color: #c8d0cb; margin-bottom: 12px; }
+      .gvWithdrawEmpty p { margin: 0; font-size: 14px; color: #8a918e; }
+      .gvWithdrawItem {
+        background: #fff;
+        border-radius: 24px;
+        padding: 18px;
+        border: 1px solid rgba(24, 61, 142, 0.08);
+        box-shadow: 0 10px 24px rgba(24, 61, 142, 0.08);
+        margin-bottom: 16px;
+      }
+      .gvWithdrawItemTop {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 10px;
+      }
+      .gvWithdrawItemTitle {
+        font-family: "Poppins", sans-serif;
+        font-size: 16px;
+        font-weight: 700;
+        color: #0d2246;
+      }
+      .gvWithdrawBadge {
+        padding: 6px 12px;
+        border-radius: 999px;
+        background: #fff6d8;
+        color: #b8842e;
+        font-size: 12px;
+        font-weight: 700;
+      }
+      .gvWithdrawBadge.paid { background: #e3f5ec; color: #0f5a3c; }
+      .gvWithdrawBottom {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+      }
+      .gvWithdrawAmount {
+        font-family: "Poppins", sans-serif;
+        font-size: 24px;
+        font-weight: 700;
+        color: #183d8e;
+        margin: 0;
+      }
+      .gvWithdrawDate {
+        margin: 0;
+        font-size: 14px;
+        color: #7b8087;
+        white-space: nowrap;
+      }
+      @media (max-width: 640px) {
+        .gvWithdrawHeader h2 { font-size: 20px; }
+        .gvWithdrawCard { padding: 26px; }
+        .gvWithdrawCard h1 { font-size: 32px; }
+      }
+      /* ============ WITHDRAW SUCCESS POPUP ============ */
+      .gvWarn { background: #fff8e6; border: 1px solid #f3e3b8; color: #b8842e; font-size: 12px; border-radius: 12px; padding: 10px 14px; margin-bottom: 12px; }
+      .gvWithdrawSuccessCard {
+        width: 100%;
+        max-width: 420px;
+        background: #fff;
+        border-radius: 28px;
+        padding: 34px 28px;
+        text-align: center;
+        box-shadow: 0 30px 70px rgba(0, 0, 0, 0.18);
+      }
+      .gvWithdrawSuccessIcon {
+        width: 82px;
+        height: 82px;
+        margin: 0 auto 22px;
+        border-radius: 50%;
+        background: #eef1f9;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #183d8e;
+      }
+      .gvWithdrawSuccessIcon svg { width: 42px; height: 42px; }
+      .gvWithdrawSuccessCard h2 {
+        margin: 0 0 14px;
+        font-family: "Poppins", sans-serif;
+        font-size: 26px;
+        font-weight: 700;
+        color: #0d2246;
+      }
+      .gvWithdrawSuccessCard p {
+        margin: 0;
+        font-size: 15px;
+        line-height: 1.8;
+        color: #6e7673;
+      }
+      #gvSuccessOk {
+        width: 100%;
+        height: 54px;
+        margin-top: 30px;
+        border: none;
+        border-radius: 999px;
+        background: #183d8e;
+        color: #fff;
+        font-family: "Poppins", sans-serif;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: 0.25s;
+      }
+      #gvSuccessOk:hover { background: #0d2246; }
+      /* ====================================================== PROFILE PAGE ====================================================== */
+      .gvProfileCard {
+        text-align: center;
+        background: #fff;
+        border: 1px solid #e7ece8;
+        border-radius: 24px;
+        box-shadow: 0 14px 36px rgba(24, 61, 142, 0.08);
+        padding: 28px 20px;
+      }
+      .gvProfileAvatar {
+        width: 76px;
+        height: 76px;
+        border-radius: 50%;
+        background: #183d8e;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto;
+        overflow: hidden;
+        box-shadow: 0 10px 24px rgba(24, 61, 142, 0.2);
+      }
+      .gvProfileAvatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+      .gvProfileName {
+        margin: 14px 0 0;
+        font-family: "Poppins", sans-serif;
+        font-size: 20px;
+        font-weight: 700;
+        color: #0d2246;
+      }
+      .gvProfileUsername { font-size: 13px; color: #9aa3b0; margin-top: 4px; }
+      .gvBadge {
+        display: inline-block;
+        font-size: 11px;
+        font-weight: 700;
+        padding: 6px 14px;
+        border-radius: 999px;
+        margin-top: 10px;
+      }
+      .gvBadge.is-active { background: #e3f5ec; color: #0f5a3c; }
+      .gvBadge.is-inactive { background: #fdecec; color: #b3261e; }
+      .gvProfileStats {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        margin-top: 20px;
+      }
+      .gvStatBox { background: #f8fbf9; border-radius: 14px; padding: 14px 6px; }
+      .gvStatBox strong { display: block; font-family: "Poppins", sans-serif; font-size: 16px; color: #0d2246; }
+      .gvStatBox span { font-size: 11px; color: #7b8087; }
+      .gvProfileTabs {
+        display: flex;
+        gap: 6px;
+        background: #fff;
+        border: 1px solid #e7ece8;
+        border-radius: 16px;
+        padding: 6px;
+        margin: 20px 0;
+      }
+      .gvProfileTab {
+        flex: 1;
+        border: none;
+        background: none;
+        border-radius: 12px;
+        padding: 10px 6px;
+        font-size: 13px;
+        font-weight: 600;
+        color: #9aa3b0;
+        cursor: pointer;
+      }
+      .gvProfileTab.active { background: #183d8e; color: #fff; }
+      .gvProfileSection {
+        display: none;
+        background: #fff;
+        border: 1px solid #e7ece8;
+        border-radius: 20px;
+        box-shadow: 0 14px 36px rgba(24, 61, 142, 0.08);
+        padding: 22px 18px;
+      }
+      .gvProfileSection.active { display: block; }
+      .field { margin-bottom: 16px; }
+      .field label {
+        display: block;
+        font-size: 12.5px;
+        font-weight: 600;
+        color: #4a534e;
+        margin-bottom: 6px;
+      }
+      .field input, .field select, .field textarea {
+        width: 100%;
+        border: 1.5px solid #e7ece8;
+        border-radius: 12px;
+        padding: 13px 14px;
+        font-size: 14px;
+        background: #fff;
+        color: #111;
+        outline: none;
+        font-family: inherit;
+      }
+      .field input:focus, .field select:focus, .field textarea:focus { border-color: #1e4fa8; }
+      .gvProfileLogout {
+        width: 100%;
+        border: 1.5px solid #e5484d;
+        background: none;
+        color: #e5484d;
+        border-radius: 999px;
+        padding: 14px 24px;
+        font-weight: 700;
+        font-size: 14px;
+        margin-top: 18px;
+        cursor: pointer;
+      }
+      /* ====================================================== TOAST ====================================================== */
+      .gvGateCardText { font-size: 13.5px; color: #4a534e; line-height: 1.7; margin-top: 8px; }
+
+      /* ============ ACTIVATE YOUR ACCOUNT (NEXTEL STYLE) ============ */
+      .gvActivateCard {
+        width: 100%;
+        max-width: 420px;
+        padding: 32px 26px;
+        border-radius: 28px;
+        background: linear-gradient(155deg, #1e4fa8 0%, #183d8e 55%, #0d2246 100%);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        box-shadow: 0 24px 60px rgba(0, 0, 0, 0.45);
+        text-align: center;
+      }
+      .gvActivateCard h2 {
+        font-family: "Poppins", sans-serif;
+        font-size: 24px;
+        font-weight: 700;
+        color: #fff;
+        margin: 0 0 16px;
+      }
+      .gvActivateCard p {
+        font-size: 15px;
+        line-height: 1.65;
+        color: rgba(255, 255, 255, 0.65);
+        margin: 0 0 24px;
+      }
+      .gvActivateActions {
+        display: flex;
+        gap: 12px;
+      }
+      .gvActivateActions button {
+        flex: 1;
+        height: 52px;
+        border: none;
+        border-radius: 999px;
+        font-family: "Poppins", sans-serif;
+        font-size: 15px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: 0.25s;
+      }
+      #gvActivateNow {
+        background: #e0a857;
+        color: #0d2246;
+      }
+      #gvActivateNow:hover {
+        transform: translateY(-2px);
+      }
+      #gvActivateBack {
+        background: rgba(255, 255, 255, 0.08);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        color: #fff;
+      }
+      #gvActivateBack:hover {
+        background: rgba(255, 255, 255, 0.14);
+      }
+      @media (max-width: 480px) {
+        .gvActivateCard {
+          padding: 28px 20px;
+        }
+        .gvActivateCard h2 {
+          font-size: 20px;
+        }
+      }
+
+      /* ============ PLAN CHOICE (NEXTEL ESIM CHOICE STYLE) ============ */
+      .gvPlanChoiceCard {
+        width: 100%;
+        max-width: 400px;
+        position: relative;
+        background: #fff;
+        border-radius: 26px;
+        padding: 28px 22px 24px;
+        box-shadow: 0 24px 60px rgba(0, 0, 0, 0.3);
+      }
+      .gvPlanChoiceClose {
+        position: absolute;
+        top: 14px;
+        right: 14px;
+        width: 34px;
+        height: 34px;
+        border-radius: 12px;
+        border: 1px solid #e7ece8;
+        background: #fff;
+        color: #4a534e;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .gvPlanChoiceHead {
+        text-align: center;
+        margin-bottom: 20px;
+      }
+      .gvPlanChoiceKicker {
+        display: inline-block;
+        font-size: 11px;
+        font-weight: 700;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        color: #b8842e;
+        margin-bottom: 6px;
+      }
+      .gvPlanChoiceHead h2 {
+        margin: 0 0 8px;
+        font-family: "Poppins", sans-serif;
+        font-size: 19px;
+        font-weight: 700;
+        color: #0d2246;
+        line-height: 1.35;
+      }
+      .gvPlanChoiceHead p {
+        margin: 0;
+        font-size: 13.5px;
+        line-height: 1.6;
+        color: #4a534e;
+      }
+      .gvPlanOption {
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        text-align: left;
+        background: #fbf8f2;
+        border: 1.5px solid #e7ece8;
+        border-radius: 18px;
+        padding: 16px 18px;
+        cursor: pointer;
+        transition: border-color 0.2s, transform 0.2s;
+      }
+      .gvPlanOption:hover {
+        border-color: #183d8e;
+        transform: translateY(-1px);
+      }
+      .gvPlanOption h3 {
+        margin: 0 0 4px;
+        font-family: "Poppins", sans-serif;
+        font-size: 15px;
+        font-weight: 700;
+        color: #0d2246;
+      }
+      .gvPlanOption .gvPlanPerk {
+        margin: 0;
+        font-size: 12px;
+        color: #4a534e;
+      }
+      .gvPlanPrice {
+        text-align: right;
+        flex-shrink: 0;
+      }
+      .gvPlanPrice strong {
+        display: block;
+        font-family: "Poppins", sans-serif;
+        font-size: 16px;
+        font-weight: 700;
+        color: #183d8e;
+      }
+      .gvPlanPrice span {
+        font-size: 11px;
+        color: #4a534e;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="site-wrapper">
+      <div class="site-main" role="main">
+        <div class="inner">
+
+          <!-- ===================== DASHBOARD ===================== -->
+          <div class="gvScreen active" id="dashboardScreen">
+            <div class="gvDash">
+
+              <header class="gvDashHeader">
+                <div class="gvDashUser">
+                  <div class="gvDashLogo" id="gvDashAvatar"><img src="favicon/apple-touch-icon.png" alt="Evermore" /></div>
+                  <div class="gvDashInfo"><p id="gvDashboardName">Dashboard</p></div>
+                </div>
+              </header>
+
+              <section class="gvStorage">
+                <div class="gvStorageTop">
+                  <span> Today's Earnings </span><span id="gvStorageText"> ₦0 / ₦14,000 </span>
+                </div>
+                <div class="gvStorageBar"><div class="gvStorageFill" id="gvStorageFill"></div></div>
+              </section>
+
+              <a class="gvTelegramBanner" id="gvTelegramBanner" href="#" target="_blank" rel="noopener">
+                <div class="gvTelegramBg"></div>
+                <div class="gvTelegramContent">
+                  <div class="gvTelegramText">
+                    <h3>Join our Official Telegram channel!</h3>
+                    <p>Get real time updates, new task alerts, and insider strategies to boost your earnings!</p>
+                  </div>
+                  <div class="gvTelegramCTA">
+                    <span>CLICK HERE</span>
+                    <svg viewBox="0 0 24 24" fill="none">
+                      <path d="M5 12h14M13 6l6 6-6 6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+                    </svg>
+                  </div>
+                </div>
+              </a>
+
+              <div class="gvBalanceRow">
+                <div class="gvBalanceBox">
+                  <span class="gvBalanceLabel"> TOTAL EARNINGS </span>
+                  <div class="gvBalance">
+                    <svg viewBox="0 0 24 24" fill="none">
+                      <rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" stroke-width="2" />
+                      <path d="M15 12h4" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                      <circle cx="9" cy="12" r="1.3" fill="currentColor" />
+                    </svg>
+                    <strong id="gvBalanceAmount"> ₦0 </strong>
+                  </div>
+                </div>
+              </div>
+
+              <div class="gvCard" id="gvCard">
+                  <div class="gvCardInner">
+                    <div class="gvCardFace gvCardFront">
+                      <div class="gvCardTop">
+                        <div class="gvCardBrand">
+                          <div class="gvCardLogo"><img src="logo-with-text.svg" alt="Evermore Logo" /></div>
+                          <div class="gvCardBrandText"><strong>EVERMORE</strong><span>AI Training Hub</span></div>
+                        </div>
+                        <div class="gvSignalWrap">
+                          <svg class="gvSignalIcon" viewBox="0 0 24 24" fill="none">
+                            <rect x="2" y="15" width="3" height="7" rx="1.5" fill="currentColor" />
+                            <rect x="7" y="11" width="3" height="11" rx="1.5" fill="currentColor" />
+                            <rect x="12" y="7" width="3" height="15" rx="1.5" fill="currentColor" />
+                            <rect x="17" y="3" width="3" height="19" rx="1.5" fill="currentColor" />
+                          </svg>
+                          <div class="gvEsim">MEMBER</div>
+                        </div>
+                      </div>
+                      <div class="gvChip">
+                        <div class="gvChipPlate">
+                          <span class="v v1"></span><span class="v v2"></span><span class="h h1"></span><span class="h h2"></span><span class="c"></span>
+                        </div>
+                      </div>
+                      <div class="gvCardNumber">
+                        <span id="gvMemberNumber"> EVR-••••-•••• </span>
+                        <button id="gvTogglePhone" type="button">Show</button>
+                        <button id="gvCopyPhone" type="button">Copy</button>
+                      </div>
+                      <div class="gvCardBottom">
+                        <div><label>PLAN</label><strong id="gvCardPlan">Free</strong></div>
+                        <div><label>TASKS</label><strong id="gvCardTasks">0</strong></div>
+                        <div><label>VALID</label><strong id="gvCardValid">—</strong></div>
+                        <div><label>STATUS</label><strong id="gvAccountStatus" class="is-inactive">Inactive</strong></div>
+                      </div>
+                      <div class="gvFlipHint">Tap to Flip</div>
+                    </div>
+                    <div class="gvCardFace gvCardBack">
+                      <div class="gvBlackStrip"></div>
+                      <div class="gvBackContent">
+                        <div class="gvQR">
+                          <svg viewBox="0 0 29 29" shape-rendering="crispEdges">
+                            <rect width="29" height="29" fill="#fff" />
+                            <g fill="#111">
+                              <path d="M0 0h7v1h-7zM0 1h1v5h-1zM6 1h1v5h-1zM0 6h7v1h-7zM2 2h3v3h-3z" />
+                              <path d="M22 0h7v1h-7zM22 1h1v5h-1zM28 1h1v5h-1zM22 6h7v1h-7zM24 2h3v3h-3z" />
+                              <path d="M0 22h7v1h-7zM0 23h1v5h-1zM6 23h1v5h-1zM0 28h7v1h-7zM2 24h3v3h-3z" />
+                              <path d="M9 0h1v1h-1zM11 0h2v1h-2zM15 0h1v1h-1zM17 0h2v1h-2zM9 2h2v1h-2zM13 2h1v1h-1zM16 2h2v1h-2zM10 4h1v2h-1zM13 4h3v1h-3zM17 4h1v1h-1zM9 6h1v2h-1zM12 6h1v2h-1zM14 6h2v1h-2zM17 6h1v2h-1z" />
+                              <path d="M9 9h4v1h-4zM15 9h1v3h-1zM18 9h3v1h-3zM24 9h1v3h-1zM26 9h2v1h-2zM9 11h1v3h-1zM12 11h2v1h-2zM17 11h1v3h-1zM20 11h1v4h-1zM23 11h1v3h-1zM9 14h2v1h-2zM13 14h1v3h-1zM16 14h2v1h-2zM19 14h1v3h-1zM22 14h3v1h-3zM26 14h2v1h-2z" />
+                              <path d="M0 9h6v1h-6zM2 11h1v3h-1zM4 11h2v1h-2zM0 13h1v3h-1zM3 14h1v3h-1zM9 17h1v3h-1zM11 17h3v1h-3zM16 17h1v3h-1zM19 17h2v1h-2zM23 17h1v3h-1zM26 17h1v3h-1zM0 16h2v1h-2zM3 17h2v1h-2zM6 17h1v3h-1zM0 19h3v1h-3z" />
+                              <path d="M9 20h1v3h-1zM12 20h2v1h-2zM16 20h1v3h-1zM19 20h1v3h-1zM22 20h1v3h-1zM24 20h3v1h-3zM10 22h3v1h-3zM14 22h1v3h-1zM18 22h2v1h-2zM21 22h2v1h-2zM25 22h1v3h-1zM9 25h2v1h-2zM12 25h1v3h-1zM16 25h3v1h-3zM20 25h1v3h-1zM23 25h2v1h-2zM27 25h1v3h-1z" />
+                              <path d="M8 0h1v29h-1zM0 8h29v1h-29z" fill="none" />
+                              <path d="M9 1h1v1h-1zM11 3h1v1h-1zM13 1h1v1h-1zM10 9h1v1h-1zM12 9h1v1h-1zM10 13h1v1h-1zM9 19h1v1h-1zM11 21h1v1h-1zM13 23h1v1h-1zM15 27h1v1h-1zM17 19h1v1h-1zM21 9h1v1h-1zM25 12h1v1h-1zM27 20h1v1h-1zM19 24h1v1h-1z" />
+                            </g>
+                          </svg>
+                        </div>
+                        <div class="gvInviteArea">
+                          <h4>EVERMORE</h4>
+                          <p>Scan to join my line</p>
+                          <h2 id="gvInviteCode">EVR-USER01</h2>
+                          <button id="gvCopyInvite" type="button">Copy Code</button>
+                        </div>
+                      </div>
+                      <div class="gvFlipHint">Tap to Flip</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <section class="gvQuickActions">
+                <button class="gvQuickAction" type="button" data-action="tasks">
+                  <span class="gvQuickIcon">
+                    <svg viewBox="0 0 24 24" fill="none">
+                      <rect x="4" y="3" width="16" height="18" rx="3" stroke="currentColor" stroke-width="1.8" />
+                      <path d="M8 8h8M8 12h8M8 16h5" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+                    </svg>
+                  </span>
+                  <span>Tasks</span>
+                </button>
+                <button class="gvQuickAction" type="button" data-action="withdraw">
+                  <span class="gvQuickIcon">
+                    <svg viewBox="0 0 24 24" fill="none">
+                      <rect x="3" y="5" width="18" height="14" rx="2" stroke="currentColor" stroke-width="1.8" />
+                      <path d="M3 10H21" stroke="currentColor" stroke-width="1.8" />
+                      <path d="M12 14v4M10 16h4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" />
+                    </svg>
+                  </span>
+                  <span>Withdraw</span>
+                </button>
+                <button class="gvQuickAction" type="button" data-action="membership">
+                  <span class="gvQuickIcon">
+                    <svg viewBox="0 0 24 24" fill="none">
+                      <rect x="3" y="7" width="18" height="13" rx="2" stroke="currentColor" stroke-width="1.8" />
+                      <path d="M3 10.5H21" stroke="currentColor" stroke-width="1.8" />
+                      <path d="M8 12.5h2M8 15.5h2" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+                      <circle cx="17" cy="14.5" r="1.6" fill="currentColor" />
+                    </svg>
+                  </span>
+                  <span>Membership</span>
+                </button>
+                <button class="gvQuickAction" type="button" data-action="profile">
+                  <span class="gvQuickIcon">
+                    <svg viewBox="0 0 24 24" fill="none">
+                      <circle cx="9" cy="8" r="3.2" stroke="currentColor" stroke-width="1.8" />
+                      <path d="M3.5 19c0-3.2 2.6-5.3 5.5-5.3s5.5 2.1 5.5 5.3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" />
+                    </svg>
+                  </span>
+                  <span>Profile</span>
+                </button>
+              </section>
+
+              <section class="gvTasksWrap">
+                <h3 class="gvSectionTitle gvTasksTitle">PREMIUM TASKS</h3>
+                <div id="gvPremiumList"></div>
+              </section>
+
+              <section class="gvContactsWrap">
+                <div class="gvPhonebookHeader">
+                  <h3 class="gvSectionTitle">TRAINING WORKFLOWS</h3>
+                </div>
+                <div id="gvWorkflowList"></div>
+                <div class="gvPhonebookNote">
+                  <svg viewBox="0 0 24 24" fill="none">
+                    <path d="M12 2l7 3v6c0 5-3.4 8.4-7 11-3.6-2.6-7-6-7-11V5l7-3z" stroke="currentColor" stroke-width="2" />
+                    <path d="M9.5 12.5l1.8 1.8 3.5-4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                  </svg>
+                  <p>
+                    Every contribution is reviewed before rewards are credited. Reward rates are subject to change at our sole discretion.
+                  </p>
+                </div>
+              </section>
+
+              <section class="gvPlanStatusWrap">
+                <h3 class="gvSectionTitle gvPlanStatusTitle">YOUR CURRENT PLAN</h3>
+                <div class="gvPlanStatusRow">
+                  <span class="gvPlanStatusLabel">Your Plan</span>
+                  <strong id="gvPlanStatusValue" class="gvPlanStatusValue is-free">Free Plan</strong>
+                </div>
+                <p class="gvPlanStatusText" id="gvPlanStatusText">
+                  You're currently on the Free Plan. Activate your one-time membership to unlock training tasks, daily earnings, and withdrawals.
+                </p>
+                <div class="gvPlanStatusDivider"></div>
+                <div class="gvPlanStatusRow">
+                  <span class="gvPlanStatusLabel">Account Status</span>
+                  <strong id="gvPlanStatusBadge" class="gvPlanStatusValue is-inactive">Inactive</strong>
+                </div>
+                <p class="gvPlanStatusText" id="gvPlanStatusHint">
+                  Your account is active. You can now contribute, earn, and withdraw your rewards.
+                </p>
+              </section>
+
+            </div>
+          </div>
+
+          <!-- ===================== WITHDRAW PAGE ===================== -->
+          <div class="gvScreen" id="gvWithdrawPage">
+            <div class="gvWithdrawHeader">
+              <button class="gvWithdrawBack" type="button" data-close="withdraw" aria-label="Back">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+              <h2>Withdraw Funds</h2>
+              <div class="gvWithdrawAvatar" id="gvWithdrawAvatar"><img src="favicon/apple-touch-icon.png" alt="Evermore" /></div>
+            </div>
+
+            <div class="gvWithdrawCard">
+              <div class="gvWithdrawGlow"></div>
+              <div class="gvWithdrawCircle"></div>
+              <span>AVAILABLE EARNINGS</span>
+              <h1 id="gvWithdrawBalance">₦0</h1>
+              <div class="gvWithdrawMinimum">
+                <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M12 8V12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/><circle cx="12" cy="16" r="1" fill="currentColor"/></svg>
+                <span id="gvWithdrawMinimum">Minimum: ₦20,000</span>
+              </div>
+            </div>
+
+            <div id="gvWithdrawStatus" class="gvWithdrawStatus locked">
+              <div class="gvWithdrawStatusTitle">
+                <svg class="gvStatusIcon" viewBox="0 0 24 24" fill="none"><rect x="5" y="10" width="14" height="10" rx="2" stroke="currentColor" stroke-width="2"/><path d="M8 10V7a4 4 0 118 0v3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                Withdrawal Locked
+              </div>
+              <p id="gvWithdrawStatusText">Keep earning from AI training tasks until you reach ₦20,000 to unlock withdrawals.</p>
+            </div>
+
+            <div class="gvWithdrawProgress">
+              <div class="gvWithdrawProgressTop"><span>Progress to withdrawal</span><strong id="gvWithdrawPercent">0%</strong></div>
+              <div class="gvProgressBar"><div id="gvProgressFill"></div></div>
+              <p id="gvWithdrawRemaining">Need ₦20,000 more to unlock</p>
+            </div>
+
+            <button id="gvWithdrawBtn" class="gvWithdrawBtn">Withdraw Now</button>
+            <button class="gvWithdrawHistoryBtn" type="button">
+              <svg viewBox="0 0 24 24" fill="none"><path d="M12 8V12L15 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/></svg>
+              Withdrawal History
+            </button>
+
+            <div class="gvWithdrawSection">
+              <div class="gvWithdrawSectionTitle">
+                <svg viewBox="0 0 24 24" fill="none"><path d="M12 8V12L15 15" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/></svg>
+                <span>Recent Withdrawals</span>
+              </div>
+              <div id="gvWithdrawHistoryList"></div>
+            </div>
+          </div>
+
+          <!-- ===================== PROFILE PAGE ===================== -->
+          <div class="gvScreen" id="gvProfilePage">
+            <div class="gvPageHeader">
+              <button class="gvBackBtn" type="button" data-close="profile" aria-label="Back">
+                <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+              </button>
+              <h2>My Profile</h2>
+            </div>
+
+            <div class="gvProfileCard">
+              <div class="gvProfileAvatar" id="gvProfileAvatar"><img src="favicon/apple-touch-icon.png" alt="Evermore" /></div>
+              <div class="gvProfileName" id="gvProfileName">—</div>
+              <div class="gvProfileUsername" id="gvProfileUsername">@—</div>
+              <div>
+                <span class="gvBadge is-inactive" id="gvProfileBadge">Free member</span>
+              </div>
+              <div class="gvProfileStats">
+                <div class="gvStatBox"><strong id="gvStatToday">₦0</strong><span>Earned today</span></div>
+                <div class="gvStatBox"><strong id="gvStatTotal">₦0</strong><span>Total earned</span></div>
+                <div class="gvStatBox"><strong id="gvStatTasks">0</strong><span>Tasks today</span></div>
+              </div>
+            </div>
+
+            <div class="gvProfileTabs">
+              <button class="gvProfileTab active" type="button" data-tab="personal">Personal</button>
+              <button class="gvProfileTab" type="button" data-tab="bank">Payout</button>
+              <button class="gvProfileTab" type="button" data-tab="password">Password</button>
+            </div>
+
+            <div class="gvProfileSection active" id="gvTabPersonal">
+              <div class="field"><label for="gvPersonalName">Full name</label><input id="gvPersonalName" type="text" /></div>
+              <div class="field"><label for="gvPersonalPhone">Phone</label><input id="gvPersonalPhone" type="tel" /></div>
+              <div class="field"><label for="gvPersonalEmail">Email</label><input id="gvPersonalEmail" type="email" /></div>
+              <button type="button" class="gvSubmitBtn" id="gvSavePersonal" style="width:100%">Save Personal Details</button>
+            </div>
+
+            <div class="gvProfileSection" id="gvTabBank">
+              <div class="gvWarn">Your payout details are required before you can withdraw.</div>
+              <div class="field">
+                <label for="gvBankSelect">Bank / Wallet</label>
+                <select id="gvBankSelect">
+                  <option value="">Select...</option>
+                  <option>Access Bank</option><option>GTBank</option><option>First Bank</option>
+                  <option>UBA</option><option>Zenith Bank</option><option>Kuda Bank</option>
+                  <option>Opay</option><option>Palmpay</option><option>Moniepoint</option>
+                  <option>MTN MoMo</option><option>Airtel Money</option><option>9mobile MoMo</option>
+                </select>
+              </div>
+              <div class="field"><label for="gvAccountNumber">Account / MoMo number</label><input id="gvAccountNumber" type="tel" inputmode="numeric" placeholder="10-11 digits" /></div>
+              <div class="field"><label for="gvAccountName">Account name</label><input id="gvAccountName" type="text" /></div>
+              <button type="button" class="gvSubmitBtn" id="gvSaveBank" style="width:100%">Save Payout Details</button>
+            </div>
+
+            <div class="gvProfileSection" id="gvTabPassword">
+              <div class="field"><label for="gvCurrentPassword">Current password</label><input id="gvCurrentPassword" type="password" /></div>
+              <div class="field"><label for="gvNewPassword">New password</label><input id="gvNewPassword" type="password" /></div>
+              <div class="field"><label for="gvConfirmPassword">Confirm new password</label><input id="gvConfirmPassword" type="password" /></div>
+              <button type="button" class="gvSubmitBtn" id="gvSavePassword" style="width:100%">Change Password</button>
+            </div>
+
+            <button type="button" class="gvProfileLogout" id="gvLogoutBtn">Log Out</button>
+          </div>
+
+        </div>
+
+        <footer class="gvBottomNav">
+          <button class="gvNavItem active" type="button" data-nav="home">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            <span>Home</span>
+          </button>
+          <button class="gvNavItem" type="button" data-nav="withdraw">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 10H21"/><path d="M12 14v4M10 16h4"/></svg>
+            <span>Withdraw</span>
+          </button>
+          <button class="gvNavItem" type="button" data-nav="earn">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 12h8"/><path d="M12 8v8"/></svg>
+            <span>Earn</span>
+          </button>
+          <button class="gvNavItem" type="button" data-nav="profile">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            <span>Profile</span>
+          </button>
+        </footer>
+      </div>
+    </div>
+
+    <!-- ===================== TASK MODAL ===================== -->
+    <div class="gvOverlay" id="gvTaskModal">
+      <div class="gvOverlayCard">
+        <div class="gvHandle"></div>
+        <div class="gvModalHead">
+          <h3 id="gvTaskTitle">Task</h3>
+          <button class="gvCloseBtn" type="button" id="gvTaskClose" aria-label="Close">✕</button>
+        </div>
+        <div id="gvTaskBody"></div>
+      </div>
+    </div>
+
+    <!-- ===================== ACTIVATE YOUR ACCOUNT GATE ===================== -->
+    <div class="gvOverlay popup" id="gvActivateGate">
+      <div class="gvActivateCard">
+        <h2>Activate your account</h2>
+        <p>
+          Your account is currently locked. You must activate your membership plan before you can start
+          premium AI training tasks, save your bank details, or run withdrawals.
+        </p>
+        <div class="gvActivateActions">
+          <button id="gvActivateNow" type="button">Activate Now</button>
+          <button id="gvActivateBack" type="button">Go Back</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================== PLAN CHOICE ===================== -->
+    <div class="gvOverlay popup" id="gvPlanChoice">
+      <div class="gvPlanChoiceCard">
+        <button id="gvPlanChoiceClose" type="button" class="gvPlanChoiceClose" aria-label="Close">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M6 6L18 18M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" /></svg>
+        </button>
+        <div class="gvPlanChoiceHead">
+          <span class="gvPlanChoiceKicker">Almost there</span>
+          <h2>You're one step away from unlocking your earnings</h2>
+          <p>Pick a membership plan to activate your profile and start premium AI training tasks today.</p>
+        </div>
+        <div class="gvPlanOptions">
+          <button class="gvPlanOption" type="button" data-plan="membership">
+            <div>
+              <h3>Evermore Membership</h3>
+              <p class="gvPlanPerk">Earn up to ₦14,000 daily &middot; Lifetime access</p>
+            </div>
+            <div class="gvPlanPrice">
+              <strong id="gvPlanPrice">₦15,000</strong>
+              <span>One-time fee</span>
+            </div>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===================== DAILY CAP ===================== -->
+    <div class="gvOverlay popup" id="gvDailyCapModal">
+      <div class="gvOverlayCard" style="text-align:center">
+        <div class="gvHandle"></div>
+        <div class="gvBigIcon gvGoldIcon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" x2="12" y1="8" y2="12"/><line x1="12" x2="12.01" y1="16" y2="16"/></svg>
+        </div>
+        <h3 style="margin:0;font-family:'Poppins',sans-serif;font-size:19px;font-weight:700;color:#0d2246">Daily limit reached</h3>
+        <p class="gvGateCardText">
+          You've hit today's earnings cap of <strong id="gvCapAmount">₦14,000</strong>. Come back tomorrow for fresh tasks — your progress is saved.
+        </p>
+        <button class="gvSubmitBtn" type="button" id="gvDailyCapOk" style="width:100%;margin-top:18px">Got it</button>
+      </div>
+    </div>
+
+    <!-- ===================== WITHDRAW SUCCESS ===================== -->
+    <div class="gvOverlay popup" id="gvWithdrawSuccess">
+      <div class="gvWithdrawSuccessCard">
+        <div class="gvWithdrawSuccessIcon">
+          <svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><path d="M8 12.5L11 15.5L16.5 9.5" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <h2>Withdrawal Submitted</h2>
+        <p>
+          Withdrawal submitted successfully. You will receive your payment shortly. Check your withdrawal
+          history to monitor payment progress.
+        </p>
+        <button id="gvSuccessOk" type="button">Go to Withdrawal History</button>
+      </div>
+    </div>
+
+    <!-- ===================== TELEGRAM POPUP ===================== -->
+    <div class="gvOverlay popup" id="gvTelegramPopup">
+      <div class="gvOverlayCard" style="text-align:center">
+        <div class="gvHandle"></div>
+        <div class="gvBigIcon gvSuccessIcon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+        </div>
+        <h3 style="margin:0;font-family:'Poppins',sans-serif;font-size:19px;font-weight:700;color:#0d2246">Join our Telegram channel</h3>
+        <p class="gvGateCardText">
+          Get new task alerts, payment updates and support from the Evermore team.
+        </p>
+        <a class="gvSubmitBtn" id="gvTelegramCta" target="_blank" rel="noopener" style="display:inline-flex;text-decoration:none;margin-top:18px">Join Channel</a>
+        <p class="gvFormFooter">
+          <button type="button" id="gvTelegramClose">Not now</button>
+        </p>
+      </div>
+    </div>
+
+    <script src="assets/app.js?v=2"></script>
+    <script>
+      (function () {
+        var E = window.Evermore;
+
+        var TASKS = [
+          { id: "quiz", title: "Quick Quiz", short: "Answer a short AI-training question and earn instantly.", reward: 1000, icon: "quiz", quick: true, free: true },
+          { id: "transcribe", title: "Transcription Check", short: "Verify a speech-to-text transcription is correct and earn.", reward: 2500, icon: "transcribe", quick: true, free: true },
+          { id: "objects", title: "Object Counting", short: "Count the objects in a sample image for vision training.", reward: 1500, icon: "objects", quick: true, free: true },
+          { id: "translation", title: "Translation Check", short: "Verify an English-to-Pidgin translation matches and earn.", reward: 2000, icon: "translation", quick: true, free: true },
+        ];
+
+        var TASK_ICONS = {
+          quiz: '<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>',
+          transcribe: '<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H8"/></svg>',
+          objects: '<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><path d="M3.27 6.96 12 12.01l8.73-5.05"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>',
+          translation: '<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m5 8 6 6"/><path d="m4 14 6-6 2-3"/><path d="M2 5h12"/><path d="M7 2h1"/><path d="m22 22-5-10-5 10"/><path d="M14 18h6"/></svg>',
+        };
+
+        /* ---------- curated training content ---------- */
+        var TASK_CONTENT = {
+          quiz: {
+            intro: "Answer the AI-training question below and get it right to earn.",
+            items: [
+              { q: "What does an AI model learn from voice training samples?", options: ["African accents and speech patterns", "Bank account details", "Website passwords", "Location data"], answer: "African accents and speech patterns" },
+              { q: "Why is image labeling important for AI models?", options: ["Models learn to recognize objects in photos", "Models get faster internet", "Images become smaller files", "Models store more photos"], answer: "Models learn to recognize objects in photos" },
+              { q: "What is text annotation used for in AI training?", options: ["Teaching models to understand written language", "Sending emails automatically", "Spell-checking the internet", "Backing up files"], answer: "Teaching models to understand written language" },
+              { q: "Which of these is a real AI training task?", options: ["Labeling image data", "Charging phones", "Watching adverts", "Selling data to strangers"], answer: "Labeling image data" },
+            ],
+          },
+          transcribe: {
+            intro: "Read the speech and the transcription below. Does the transcription correctly capture what was spoken?",
+            options: ["Correct — it matches", "Incorrect — it differs"],
+            items: [
+              { speech: "I would like to recharge my phone with 500 naira.", transcription: "I would like to recharge my phone with 500 naira.", match: true },
+              { speech: "Please send the receipt to my email address.", transcription: "Please send the receipt to my email dresses.", match: false },
+              { speech: "The meeting has been moved to Thursday afternoon.", transcription: "The meeting has been moved to Thursday afternoon.", match: true },
+              { speech: "My brother lives in Kano, near the new market.", transcription: "My brother lives in Kano, near the new market place.", match: false },
+            ],
+          },
+          objects: {
+            intro: "Just like a security check — tap every square that shows a person.",
+            items: [
+              {
+                prompt: "Select all squares containing a person",
+                tiles: [
+                  { src: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=160&h=160&fit=crop&q=70", person: true },
+                  { src: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=160&h=160&fit=crop&q=70", person: false },
+                  { src: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=160&h=160&fit=crop&q=70", person: true },
+                  { src: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=160&h=160&fit=crop&q=70", person: false },
+                  { src: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=160&h=160&fit=crop&q=70", person: true },
+                  { src: "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=160&h=160&fit=crop&q=70", person: false },
+                  { src: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=160&h=160&fit=crop&q=70", person: true },
+                  { src: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=160&h=160&fit=crop&q=70", person: false },
+                  { src: "https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=160&h=160&fit=crop&q=70", person: false },
+                ],
+              },
+              {
+                prompt: "Select all squares containing a person",
+                tiles: [
+                  { src: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=160&h=160&fit=crop&q=70", person: true },
+                  { src: "https://images.unsplash.com/photo-1472214103451-9374bd1c798e?w=160&h=160&fit=crop&q=70", person: false },
+                  { src: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=160&h=160&fit=crop&q=70", person: true },
+                  { src: "https://images.unsplash.com/photo-1469474968028-56623f02e42e?w=160&h=160&fit=crop&q=70", person: false },
+                  { src: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=160&h=160&fit=crop&q=70", person: true },
+                  { src: "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=160&h=160&fit=crop&q=70", person: false },
+                  { src: "https://images.unsplash.com/photo-1441974231531-c6227db76b6e?w=160&h=160&fit=crop&q=70", person: false },
+                  { src: "https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=160&h=160&fit=crop&q=70", person: true },
+                  { src: "https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?w=160&h=160&fit=crop&q=70", person: false },
+                ],
+              },
+            ],
+          },
+          translation: {
+            intro: "Read the English sentence and its Pidgin translation below. Does the translation correctly match the meaning?",
+            options: ["Correct — it matches", "Incorrect — it differs"],
+            items: [
+              { source: "Good morning, how are you doing today?", target: "Good morning, how you dey today?", match: true },
+              { source: "Please send me the receipt.", target: "Abeg send me the receipt.", match: true },
+              { source: "I am going to the market.", target: "I dey go the beach.", match: false },
+              { source: "The food was very tasty.", target: "The food na very sweet.", match: true },
+              { source: "I need to buy a new phone.", target: "I need to sell my old phone.", match: false },
+            ],
+          },
+        };
+
+        function pickItem(list, offset) {
+          if (!list || !list.length) return list;
+          var day = Math.floor(Date.now() / 86400000);
+          return list[(day + (offset || 0)) % list.length];
+        }
+
+        var user = E.currentUser();
+        if (!user) {
+          window.location.replace("login.html");
+          return;
+        }
+
+        var $ = function (id) { return document.getElementById(id); };
+        var dashAvatar = $("gvDashAvatar");
+        var balanceEl = $("gvBalanceAmount");
+        var storageFill = $("gvStorageFill");
+        var storageText = $("gvStorageText");
+        var premiumList = $("gvPremiumList");
+        var workflowList = $("gvWorkflowList");
+        var telegramBanner = $("gvTelegramBanner");
+
+        var memberNumberShown = false;
+        var currentMethod = "Bank transfer";
+        var activeCode = null;
+
+        /* ---------- helpers ---------- */
+        function openOverlay(el) {
+          el.classList.add("active");
+          document.body.style.overflow = "hidden";
+        }
+        function closeOverlay(el) {
+          el.classList.remove("active");
+          document.body.style.overflow = "";
+        }
+        function setNav(key) {
+          document.querySelectorAll(".gvNavItem").forEach(function (n) {
+            n.classList.toggle("active", n.dataset.nav === key);
+          });
+        }
+        function showScreen(id, navKey) {
+          document.querySelectorAll(".gvScreen").forEach(function (s) { s.classList.remove("active"); });
+          $(id).classList.add("active");
+          setNav(navKey);
+          if (id === "gvWithdrawPage") refreshWithdraw();
+          if (id === "gvProfilePage") refreshProfile();
+          window.scrollTo(0, 0);
+        }
+        function showDashboard() { showScreen("dashboardScreen", "home"); }
+
+        /* ---------- card / member identity ---------- */
+        function getOrCreateMemberNumber() {
+          var n = E.get("evermore_member_number", "");
+          if (n) return n;
+          n = "EVR-" + String(Math.floor(1000 + Math.random() * 9000)) + "-" + String(Math.floor(1000 + Math.random() * 9000));
+          E.set("evermore_member_number", n);
+          return n;
+        }
+        function getOrCreateReferral() {
+          var r = E.get("evermore_referral_code", "");
+          if (r) return r;
+          var surname = (user.fullName || "USER").split(/\s+/).slice(-1)[0].replace(/[^a-zA-Z]/g, "").toUpperCase().slice(0, 4) || "USER";
+          r = "EVR-" + surname + String(Math.floor(100 + Math.random() * 900));
+          E.set("evermore_referral_code", r);
+          return r;
+        }
+
+        function updateCard() {
+          var num = getOrCreateMemberNumber();
+          $("gvMemberNumber").textContent = memberNumberShown ? num : num.slice(0, 4) + "-••••-••••";
+          $("gvTogglePhone").textContent = memberNumberShown ? "Hide" : "Show";
+          $("gvInviteCode").textContent = getOrCreateReferral();
+
+          var active = E.isActive();
+          $("gvCardPlan").textContent = active ? "Evermore" : "Free";
+          $("gvCardTasks").textContent = E.getTaskData().completed.length;
+          var since = E.get(E.LS.activationDate, "");
+          $("gvCardValid").textContent = since ? new Date(since).toLocaleDateString("en-NG", { month: "2-digit", year: "2-digit" }) : "—";
+          var status = $("gvAccountStatus");
+          status.textContent = active ? "Active" : "Inactive";
+          status.className = active ? "is-active" : "is-inactive";
+        }
+
+        $("gvCard").addEventListener("click", function () {
+          this.classList.toggle("flipped");
+        });
+        $("gvTogglePhone").addEventListener("click", function (e) {
+          e.stopPropagation();
+          memberNumberShown = !memberNumberShown;
+          updateCard();
+        });
+        $("gvCopyPhone").addEventListener("click", function (e) {
+          e.stopPropagation();
+          var num = getOrCreateMemberNumber();
+          (navigator.clipboard ? navigator.clipboard.writeText(num) : Promise.reject())
+            .then(function () { E.showToast("Member number copied.", true); })
+            .catch(function () { E.showToast("Copy failed — tap number.", false); });
+        });
+        $("gvCopyInvite").addEventListener("click", function (e) {
+          e.stopPropagation();
+          var code = getOrCreateReferral();
+          (navigator.clipboard ? navigator.clipboard.writeText(code) : Promise.reject())
+            .then(function () { E.showToast("Referral code copied.", true); })
+            .catch(function () { E.showToast("Copy failed.", false); });
+        });
+
+        /* ---------- refresh dashboard ---------- */
+        function refreshAll() {
+          refreshHeader();
+          refreshBalance();
+          renderPremium();
+          renderWorkflows();
+          renderPlan();
+          updateCard();
+        }
+
+        function refreshHeader() {
+          $("gvDashboardName").textContent = user.fullName.split(" ")[0] + "'s Dashboard";
+          $("gvProfileName").textContent = user.fullName;
+          $("gvProfileUsername").textContent = "@" + user.username;
+        }
+
+        function refreshBalance() {
+          var cfg = E.config();
+          balanceEl.textContent = " ₦" + Number(E.getBalance()).toLocaleString("en-NG") + " ";
+          var earned = E.getDailyEarned();
+          var pct = Math.min(100, Math.round((earned / cfg.dailyCap) * 100));
+          storageFill.style.width = pct + "%";
+          storageText.textContent = " " + E.formatNaira(earned) + " / " + E.formatNaira(cfg.dailyCap) + " ";
+        }
+
+        function renderStats() {
+          var cfg = E.config();
+          var earned = E.getDailyEarned();
+          var pct = Math.min(100, Math.round((earned / cfg.dailyCap) * 100));
+          $("gvNetworkLoadPct").textContent = pct + "%";
+          $("gvNetworkLoadRing").style.strokeDashoffset = String(326.7256 - (326.7256 * pct) / 100);
+          $("gvStatToday2").textContent = E.formatNaira(earned);
+          $("gvStatTasks2").textContent = E.getTaskData().completed.length;
+          $("gvStatLifetime").textContent = E.formatNaira(E.getTotalEarned());
+        }
+
+        function renderPlan() {
+          var active = E.isActive();
+          var val = $("gvPlanStatusValue");
+          var badge = $("gvPlanStatusBadge");
+          if (active) {
+            val.textContent = "Evermore Member";
+            val.className = "gvPlanStatusValue is-active";
+            badge.textContent = "Active";
+            badge.className = "gvPlanStatusValue is-active";
+            $("gvPlanStatusText").textContent = "Your membership is active — training tasks, daily earnings, and withdrawals are unlocked.";
+            $("gvPlanStatusHint").textContent = "Your account is active. You can now contribute, earn, and withdraw your rewards.";
+          } else {
+            val.textContent = "Free Plan";
+            val.className = "gvPlanStatusValue is-free";
+            badge.textContent = "Inactive";
+            badge.className = "gvPlanStatusValue is-inactive";
+            $("gvPlanStatusText").textContent = "You're currently on the Free Plan. Activate your one-time membership to unlock training tasks, daily earnings, and withdrawals.";
+            $("gvPlanStatusHint").textContent = "Activate your membership to start contributing and earning rewards.";
+          }
+        }
+
+        /* ---------- tasks ---------- */
+        var PREMIUM_TASKS = [
+          { id: "pvoice", title: "AI Voice Training", short: "Record advanced speech samples for African voice models.", reward: 25000 },
+          { id: "pvision", title: "AI Vision Labeling", short: "Label complex image datasets for vision model training.", reward: 20000 },
+        ];
+
+        function renderPremium() {
+          premiumList.innerHTML = "";
+          PREMIUM_TASKS.forEach(function (t) {
+            var card = document.createElement("div");
+            card.className = "gvPremiumCard";
+            card.innerHTML =
+              '<span class="gvTaskIcon"><img src="favicon/apple-touch-icon.png" alt="" /></span>' +
+              '<span class="gvTaskInfo"><strong>' + t.title + "</strong><span>" + t.short + "</span></span>" +
+              '<span class="gvStartTask">' +
+                '<span class="gvRate">+' + E.formatNaira(t.reward) + "</span>" +
+                '<button type="button" class="gvStartBtn">Start Task</button>' +
+              "</span>";
+            card.querySelector(".gvStartBtn").addEventListener("click", function () { openPremium(t); });
+            card.addEventListener("click", function () { openPremium(t); });
+            premiumList.appendChild(card);
+          });
+        }
+
+        function openPremium(t) {
+          if (!E.isActive()) { openActivateGate(); return; }
+          E.showToast(t.title + " unlocks with an upgraded plan — coming soon.", false);
+        }
+
+        function renderWorkflows() {
+          workflowList.innerHTML = "";
+          TASKS.forEach(function (t) {
+            var count = E.taskCountToday(t.id);
+            var done = count >= E.config().taskDailyLimit;
+            var status = count === 0 ? "Ready" : (done ? "2/2 done today" : "1/2 done");
+            var row = document.createElement("div");
+            row.className = "gvWorkflow";
+            row.innerHTML =
+              '<div class="gvWorkflowLeft">' +
+                '<div class="gvWorkflowAvatar"><img src="favicon/apple-touch-icon.png" alt="" /></div>' +
+                '<div class="gvWorkflowInfo"><h4>' + t.title + "</h4><p>" + t.short + "</p>" +
+                '<span class="gvIdle' + (done ? " done" : "") + '">' + status + "</span></div>" +
+              "</div>" +
+              '<div class="gvStartTask">' +
+                '<span class="gvRate">' + E.formatNaira(t.reward) + "</span>" +
+                '<button type="button" class="gvStartBtn">' + (done ? "Done" : "Start Task") + "</button>" +
+              "</div>";
+            row.querySelector(".gvStartBtn").addEventListener("click", function () { openTask(t); });
+            row.addEventListener("click", function () { openTask(t); });
+            workflowList.appendChild(row);
+          });
+        }
+
+        /* ---------- task modal ---------- */
+        var taskModal = $("gvTaskModal");
+        var taskBody = $("gvTaskBody");
+        var taskTitle = $("gvTaskTitle");
+        var currentTask = null;
+        var currentItem = null;
+        var selectedOption = null;
+        var selectedTiles = {};
+
+        function taskValidatable(t) {
+          return ["quiz", "transcribe", "objects", "translation"].indexOf(t.id) !== -1;
+        }
+
+        function taskAnswer(t) {
+          if (t.id === "transcribe" || t.id === "translation") {
+            return currentItem.match ? "Correct — it matches" : "Incorrect — it differs";
+          }
+          return currentItem ? currentItem.answer : null;
+        }
+
+        function openDailyCap() {
+          $("gvCapAmount").textContent = E.formatNaira(E.config().dailyCap);
+          openOverlay($("gvDailyCapModal"));
+        }
+
+        function openTask(t) {
+          if (!E.isActive() && !t.free) { openActivateGate(); return; }
+          if (E.dailyCapReached()) { openDailyCap(); return; }
+          if (E.taskDoneToday(t.id)) { E.showToast("You've completed this task twice today. Come back tomorrow.", false); return; }
+          currentTask = t;
+          selectedOption = null;
+          taskTitle.textContent = t.title;
+          renderTaskBody(t);
+          openOverlay(taskModal);
+        }
+
+        function renderTaskBody(t) {
+          var c = TASK_CONTENT[t.id];
+          var item = pickItem(c.items, E.taskCountToday(t.id));
+          currentItem = item;
+          var html = '<div class="gvTaskBody"><p>' + c.intro + "</p>";
+          html += '<div class="gvTaskWrong" id="gvTaskWrong">' +
+            '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>' +
+            '<span id="gvTaskWrongText">That answer is incorrect. Please try again.</span>' +
+            '<button type="button" class="gvRetryBtn" id="gvRetryBtn">Try Again</button></div>';
+
+          if (t.id === "objects") {
+            html += '<div class="gvCaptchaPrompt">' + item.prompt + '</div>';
+            html += '<div class="gvCaptchaGrid">';
+            item.tiles.forEach(function (tile, i) {
+              html += '<button type="button" class="gvCaptchaTile" data-tile="' + i + '" style="background-image:url(\'' + tile.src + '\')" aria-label="Image tile"></button>';
+            });
+            html += "</div>";
+          } else if (t.id === "transcribe") {
+            html +=
+              '<div class="gvTaskSnippet"><strong>Speech:</strong> "' + item.speech + '"<br/><br/><strong>Transcription:</strong> "' + item.transcription + '"</div>';
+            c.options.forEach(function (o) {
+              html += '<button type="button" class="gvOption" data-opt="' + o + '">' + o + "</button>";
+            });
+          } else if (t.id === "translation") {
+            html +=
+              '<div class="gvTaskSnippet"><strong>English:</strong> "' + item.source + '"<br/><br/><strong>Pidgin:</strong> "' + item.target + '"</div>';
+            c.options.forEach(function (o) {
+              html += '<button type="button" class="gvOption" data-opt="' + o + '">' + o + "</button>";
+            });
+          } else {
+            html += '<div class="gvTaskSnippet">' + item.q + "</div>";
+            item.options.forEach(function (o) {
+              html += '<button type="button" class="gvOption" data-opt="' + o + '">' + o + "</button>";
+            });
+          }
+
+          html +=
+            '<button type="button" class="gvSubmitTask" id="gvSubmitTask">Submit &amp; Earn ' + E.formatNaira(t.reward) + "</button>";
+          taskBody.innerHTML = html;
+          bindTaskBody(t);
+        }
+
+        function bindTaskBody(t) {
+          var submitBtn = $("gvSubmitTask");
+          submitBtn.disabled = true;
+
+          taskBody.querySelectorAll(".gvOption").forEach(function (btn) {
+            btn.addEventListener("click", function () {
+              taskBody.querySelectorAll(".gvOption").forEach(function (b) { b.classList.remove("selected"); });
+              btn.classList.add("selected");
+              selectedOption = btn.dataset.opt;
+              submitBtn.disabled = false;
+              var wrong = taskBody.querySelector("#gvTaskWrong");
+              if (wrong) wrong.classList.remove("show");
+            });
+          });
+
+          if (t.id === "objects") {
+            selectedTiles = {};
+            taskBody.querySelectorAll(".gvCaptchaTile").forEach(function (btn) {
+              btn.addEventListener("click", function () {
+                if (btn.classList.contains("selected")) {
+                  btn.classList.remove("selected");
+                  delete selectedTiles[btn.dataset.tile];
+                } else {
+                  btn.classList.add("selected");
+                  selectedTiles[btn.dataset.tile] = true;
+                }
+                submitBtn.disabled = Object.keys(selectedTiles).length === 0;
+                var wrong = taskBody.querySelector("#gvTaskWrong");
+                if (wrong) wrong.classList.remove("show");
+              });
+            });
+          }
+
+          var retryBtn = taskBody.querySelector("#gvRetryBtn");
+          if (retryBtn) {
+            retryBtn.addEventListener("click", function () {
+              var wrong = taskBody.querySelector("#gvTaskWrong");
+              if (wrong) wrong.classList.remove("show");
+            });
+          }
+
+          submitBtn.addEventListener("click", function () { submitTask(t); });
+        }
+
+        function showTaskWrong() {
+          var wrong = $("gvTaskWrong");
+          if (!wrong) return;
+          wrong.classList.add("show");
+          selectedOption = null;
+          selectedTiles = {};
+          var submitBtn = $("gvSubmitTask");
+          if (submitBtn) submitBtn.disabled = true;
+          taskBody.querySelectorAll(".gvOption").forEach(function (b) { b.classList.remove("selected"); });
+          taskBody.querySelectorAll(".gvCaptchaTile").forEach(function (b) { b.classList.remove("selected"); });
+        }
+
+        function submitTask(t) {
+          if (taskValidatable(t)) {
+            if (t.id === "objects") {
+              var expected = {};
+              currentItem.tiles.forEach(function (tile, i) { if (tile.person) expected[String(i)] = true; });
+              if (Object.keys(selectedTiles).sort().join(",") !== Object.keys(expected).sort().join(",")) {
+                showTaskWrong();
+                return;
+              }
+            } else {
+              var correct = taskAnswer(t);
+              if (selectedOption !== correct) {
+                showTaskWrong();
+                return;
+              }
+            }
+          }
+          var credit = E.addEarnings(t.reward);
+          E.recordTask(t.id, t.title, credit);
+          closeOverlay(taskModal);
+          refreshAll();
+          var msg = credit >= t.reward
+            ? "Reward credited: " + E.formatNaira(credit)
+            : "Daily cap hit — added " + E.formatNaira(credit);
+          E.showToast(msg, true);
+          if (E.dailyCapReached()) {
+            setTimeout(function () { openDailyCap(); }, 900);
+          }
+        }
+
+        /* ---------- activate your account (nextel flow) ---------- */
+        var gate = $("gvActivateGate");
+        var planChoice = $("gvPlanChoice");
+
+        function openActivateGate() {
+          if (E.isActive()) return;
+          openOverlay(gate);
+        }
+
+        $("gvActivateBack").addEventListener("click", function () { closeOverlay(gate); });
+        $("gvActivateNow").addEventListener("click", function () {
+          closeOverlay(gate);
+          $("gvPlanPrice").textContent = E.formatNaira(E.config().membershipPrice);
+          openOverlay(planChoice);
+        });
+        $("gvPlanChoiceClose").addEventListener("click", function () { closeOverlay(planChoice); });
+        document.querySelectorAll(".gvPlanOption").forEach(function (btn) {
+          btn.addEventListener("click", function () {
+            var ready = window.EvermoreConfigReady || Promise.resolve(window.EvermoreConfig || {});
+            ready.then(function () {
+              var cfg = window.EvermoreConfig || {};
+              if (!cfg.usePaymentLink) {
+                window.location.href = "payment.html?plan=membership";
+                return;
+              }
+              var link = cfg.paymentLink1 || cfg.paymentLink || E.config().paymentLink || "";
+              if (!link) {
+                E.showToast("Payment link not available yet. Please try again shortly.", false);
+                return;
+              }
+              window.open(link, "_blank");
+              closeOverlay(planChoice);
+            });
+          });
+        });
+
+        /* ---------- withdraw (nextel flow) ---------- */
+        var LOCK_ICON = '<svg class="gvStatusIcon" viewBox="0 0 24 24" fill="none"><rect x="5" y="10" width="14" height="10" rx="2" stroke="currentColor" stroke-width="2"/><path d="M8 10V7a4 4 0 118 0v3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>';
+        var CHECK_ICON = '<svg class="gvStatusIcon" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="currentColor" stroke-width="2"/><path d="M8 12.5L11 15.5L16.5 9.5" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+        function withdrawMoney(v) { return "₦" + Number(v).toLocaleString("en-NG"); }
+
+        function refreshWithdraw() {
+          var balance = E.getBalance();
+          var min = E.config().withdrawMin;
+
+          $("gvWithdrawBalance").textContent = withdrawMoney(balance);
+          $("gvWithdrawMinimum").textContent = "Minimum: " + withdrawMoney(min);
+
+          var p = Math.min(100, (balance / min) * 100);
+          $("gvWithdrawPercent").textContent = Math.floor(p) + "%";
+          $("gvProgressFill").style.width = p + "%";
+
+          var status = $("gvWithdrawStatus");
+          var title = status.querySelector(".gvWithdrawStatusTitle");
+          if (balance < min) {
+            status.classList.remove("unlocked");
+            status.classList.add("locked");
+            title.innerHTML = LOCK_ICON + "Withdrawal Locked";
+            $("gvWithdrawStatusText").textContent =
+              "Keep earning from AI training tasks until you reach " + withdrawMoney(min) + " to unlock withdrawals.";
+            $("gvWithdrawRemaining").textContent = "Need " + withdrawMoney(min - balance) + " more to unlock";
+          } else {
+            status.classList.remove("locked");
+            status.classList.add("unlocked");
+            title.innerHTML = CHECK_ICON + "Withdrawal Available";
+            $("gvWithdrawStatusText").textContent = "You've reached the withdrawal threshold. You can now continue.";
+            $("gvWithdrawRemaining").textContent = "Withdrawal threshold reached.";
+          }
+          renderWithdrawHistory();
+        }
+
+        function renderWithdrawHistory() {
+          var list = $("gvWithdrawHistoryList");
+          var rows = E.getWithdrawals();
+          list.innerHTML = "";
+          if (!rows.length) {
+            list.innerHTML = '<div class="gvWithdrawEmpty">' +
+              '<svg viewBox="0 0 24 24" fill="none"><path d="M5 8H19L18 18H6L5 8Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M9 8V6A3 3 0 0115 6V8" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>' +
+              "<p>No withdrawals yet</p></div>";
+            return;
+          }
+          rows.forEach(function (w) {
+            var paid = w.status === "Paid";
+            var row = document.createElement("div");
+            row.className = "gvWithdrawItem";
+            row.innerHTML =
+              '<div class="gvWithdrawItemTop">' +
+                '<div class="gvWithdrawItemTitle">Daily Earnings</div>' +
+                '<div class="gvWithdrawBadge' + (paid ? " paid" : "") + '">' + w.status + "</div>" +
+              "</div>" +
+              '<div class="gvWithdrawBottom">' +
+                '<div class="gvWithdrawAmount">-' + E.formatNaira(w.amount) + "</div>" +
+                '<div class="gvWithdrawDate">' + w.date + " • " + w.time + "</div>" +
+              "</div>";
+            list.appendChild(row);
+          });
+        }
+
+        $("gvWithdrawBtn").addEventListener("click", function () {
+          if (!E.isActive()) {
+            openActivateGate();
+            return;
+          }
+          var min = E.config().withdrawMin;
+          var balance = E.getBalance();
+          if (balance < min) {
+            E.showToast(
+              "You need " + withdrawMoney(min - balance) + " more to reach the " + withdrawMoney(min) +
+                " withdrawal limit. Keep completing AI training tasks to unlock withdrawals.",
+              false,
+              "Withdrawal limit not reached"
+            );
+            return;
+          }
+          openOverlay($("gvWithdrawSuccess"));
+        });
+
+        $("gvSuccessOk").addEventListener("click", function () {
+          closeOverlay($("gvWithdrawSuccess"));
+          E.addWithdrawal(E.getBalance(), "Bank transfer");
+          E.setBalance(0);
+          refreshWithdraw();
+          showScreen("gvWithdrawPage", "withdraw");
+        });
+
+        /* ---------- profile ---------- */
+        function refreshProfile() {
+          var p = E.get(E.LS.profilePersonal, {});
+          var b = E.getBank();
+          var u = E.currentUser();
+          if (!u) return;
+          $("gvPersonalName").value = p.name || u.fullName || "";
+          $("gvPersonalPhone").value = p.phone || u.phone || "";
+          $("gvPersonalEmail").value = p.email || u.email || "";
+          $("gvBankSelect").value = b.bank || "";
+          $("gvAccountNumber").value = b.account || "";
+          $("gvAccountName").value = b.name || "";
+          $("gvStatToday").textContent = E.formatNaira(E.getDailyEarned());
+          $("gvStatTotal").textContent = E.formatNaira(E.getTotalEarned());
+          $("gvStatTasks").textContent = E.getTaskData().completed.length;
+          $("gvProfileBadge").textContent = E.isActive() ? "Evermore Member" : "Free member";
+          $("gvProfileBadge").className = "gvBadge " + (E.isActive() ? "is-active" : "is-inactive");
+        }
+
+        document.querySelectorAll(".gvProfileTab").forEach(function (tab) {
+          tab.addEventListener("click", function () {
+            document.querySelectorAll(".gvProfileTab").forEach(function (t) { t.classList.remove("active"); });
+            document.querySelectorAll(".gvProfileSection").forEach(function (s) { s.classList.remove("active"); });
+            tab.classList.add("active");
+            $("gvTab" + tab.dataset.tab.charAt(0).toUpperCase() + tab.dataset.tab.slice(1)).classList.add("active");
+          });
+        });
+
+        $("gvSavePersonal").addEventListener("click", function () {
+          var name = $("gvPersonalName").value.trim();
+          var phone = $("gvPersonalPhone").value.trim();
+          var email = $("gvPersonalEmail").value.trim();
+          if (!name || !phone || !email) { E.showToast("Please fill all personal fields.", false); return; }
+          E.set(E.LS.profilePersonal, { name: name, phone: phone, email: email });
+          var u = E.currentUser();
+          u.fullName = name;
+          u.phone = phone.replace(/\D/g, "");
+          u.email = email;
+          E.set(E.LS.users, E.get(E.LS.users, []).map(function (x) { return x.phone === user.phone ? u : x; }));
+          E.set(E.LS.current, u);
+          user = u;
+          refreshAll();
+          E.showToast("Personal details saved.", true);
+        });
+
+        $("gvSaveBank").addEventListener("click", function () {
+          var bank = $("gvBankSelect").value;
+          var account = $("gvAccountNumber").value.trim();
+          var name = $("gvAccountName").value.trim();
+          if (!bank) { E.showToast("Select your bank or wallet.", false); return; }
+          if (account.length < 10) { E.showToast("Enter a valid account / MoMo number.", false); return; }
+          if (!name) { E.showToast("Enter the account name.", false); return; }
+          E.set(E.LS.profileBank, { bank: bank, account: account, name: name });
+          E.showToast("Payout details saved. You can now withdraw.", true);
+        });
+
+        $("gvSavePassword").addEventListener("click", function () {
+          var cur = $("gvCurrentPassword").value;
+          var nw = $("gvNewPassword").value;
+          var cf = $("gvConfirmPassword").value;
+          var u = E.currentUser();
+          if (cur !== u.password) { E.showToast("Current password is incorrect.", false); return; }
+          if (nw.length < 6) { E.showToast("New password must be at least 6 characters.", false); return; }
+          if (nw !== cf) { E.showToast("Passwords do not match.", false); return; }
+          u.password = nw;
+          E.set(E.LS.users, E.get(E.LS.users, []).map(function (x) { return x.phone === u.phone ? u : x; }));
+          E.set(E.LS.current, u);
+          user = u;
+          $("gvCurrentPassword").value = $("gvNewPassword").value = $("gvConfirmPassword").value = "";
+          E.showToast("Password changed.", true);
+        });
+
+        $("gvLogoutBtn").addEventListener("click", function () {
+          E.remove(E.LS.current);
+          window.location.href = "login.html";
+        });
+
+        /* ---------- navigation ---------- */
+        document.querySelectorAll(".gvNavItem").forEach(function (nav) {
+          nav.addEventListener("click", function () {
+            var key = nav.dataset.nav;
+            if (key === "home") showDashboard();
+            else if (key === "withdraw") showScreen("gvWithdrawPage", "withdraw");
+            else if (key === "earn") {
+              showDashboard();
+              setTimeout(function () {
+                document.getElementById("gvWorkflowList").scrollIntoView({ behavior: "smooth", block: "center" });
+              }, 80);
+            }
+            else if (key === "profile") showScreen("gvProfilePage", "profile");
+          });
+        });
+
+        document.querySelectorAll("[data-close]").forEach(function (btn) {
+          btn.addEventListener("click", function () {
+            var k = btn.dataset.close;
+            if (k === "withdraw") showDashboard();
+            if (k === "profile") showDashboard();
+          });
+        });
+
+        document.querySelectorAll(".gvQuickAction").forEach(function (act) {
+          act.addEventListener("click", function () {
+            var a = act.dataset.action;
+            if (a === "tasks") {
+              document.getElementById("gvPremiumList").scrollIntoView({ behavior: "smooth", block: "center" });
+            } else if (a === "earn") {
+              document.getElementById("gvWorkflowList").scrollIntoView({ behavior: "smooth", block: "center" });
+            } else if (a === "withdraw") {
+              showScreen("gvWithdrawPage", "withdraw");
+            } else if (a === "membership") {
+              openActivateGate();
+            } else if (a === "profile") {
+              showScreen("gvProfilePage", "profile");
+            }
+          });
+        });
+
+        $("gvTaskClose").addEventListener("click", function () { closeOverlay(taskModal); });
+        $("gvDailyCapOk").addEventListener("click", function () { closeOverlay($("gvDailyCapModal")); });
+
+        /* ---------- telegram ---------- */
+        function tgLink() {
+          return (window.EvermoreConfig && window.EvermoreConfig.telegramLink) || "";
+        }
+        function applyTelegram() {
+          var link = tgLink();
+          if (link) {
+            telegramBanner.href = link;
+            telegramBanner.style.display = "";
+            $("gvTelegramCta").href = link;
+          } else {
+            telegramBanner.style.display = "none";
+            $("gvTelegramCta").href = "#";
+          }
+        }
+        applyTelegram();
+        $("gvTelegramClose").addEventListener("click", function () { closeOverlay($("gvTelegramPopup")); });
+
+        document.addEventListener("evermore-config-ready", function () {
+          applyTelegram();
+          refreshAll();
+          setTimeout(function () {
+            if (tgLink() && document.visibilityState === "visible") {
+              openOverlay($("gvTelegramPopup"));
+            }
+          }, 6000);
+        });
+
+        /* ---------- init ---------- */
+        refreshAll();
+        document.addEventListener("visibilitychange", function () { refreshAll(); });
+      })();
+    </script>
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+      import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyDrnmtx0LkfMKytzTKQZwXCg1JKZXiJmtU",
+        authDomain: "glamour-28049.firebaseapp.com",
+        projectId: "glamour-28049",
+        storageBucket: "glamour-28049.firebasestorage.app",
+        messagingSenderId: "22177815395",
+        appId: "1:22177815395:web:2ca7caa2b1626299675156",
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const db = getFirestore(app, "(default)");
+      const CONFIG_DOC = doc(db, "account", "evermorebobby");
+
+      window.EvermoreConfig = {
+        membershipPrice: 15000,
+        paymentLink: "",
+        paymentLink1: "",
+        paymentLink2: "",
+        telegramLink: "",
+        whatsappLink: "",
+        bankName: "",
+        accountName: "",
+        accountNumber: "",
+        usePaymentLink: false,
+      };
+
+      window.EvermoreConfigReady = getDoc(CONFIG_DOC)
+        .then((snap) => {
+          const data = snap.exists() ? snap.data() : {};
+          window.EvermoreConfig = Object.assign(window.EvermoreConfig, data);
+          if (window.Evermore && typeof window.Evermore.applyRemoteConfig === "function") {
+            window.Evermore.applyRemoteConfig(data);
+          }
+        })
+        .catch((err) => {
+          console.error("Failed to load Evermore config:", err);
+        })
+        .finally(() => {
+          window.EvermoreConfigLoaded = true;
+          document.dispatchEvent(new CustomEvent("evermore-config-ready"));
+        });
+    </script>
+  </body>
+  </html>

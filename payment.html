@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en-NG">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#183D8E" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Evermore — Secure Activation</title>
+    <link rel="icon" href="favicon/favicon.ico" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap" rel="stylesheet" />
+    <style>
+      *,
+      *::before,
+      *::after { box-sizing: border-box; margin: 0; padding: 0; }
+      :root {
+        --navy: #183d8e;
+        --navy-dark: #0d2246;
+        --gold: #e0a857;
+        --bg: #fbf8f2;
+        --card: #ffffff;
+        --border: rgba(24, 61, 142, 0.1);
+        --muted: #6e7673;
+        --muted2: #8d9591;
+        --danger: #e53935;
+      }
+      body {
+        background: var(--bg);
+        font-family: "Inter", sans-serif;
+        color: var(--navy-dark);
+        min-height: 100vh;
+        overflow-x: hidden;
+        padding: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+      }
+      #payPage {
+        width: 100%;
+        max-width: 520px;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      .top-section { text-align: center; width: 100%; margin-bottom: 24px; }
+      .security-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: #eef1f9;
+        border: 1px solid var(--border);
+        border-radius: 999px;
+        padding: 10px 20px;
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--navy);
+        margin-bottom: 20px;
+      }
+      .security-badge svg { width: 16px; height: 16px; fill: var(--navy); }
+      .pay-logo {
+        width: 64px;
+        height: 64px;
+        margin: 0 auto 16px;
+        border-radius: 50%;
+        background: transparent;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+      }
+      .pay-logo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+      .pay-title {
+        font-family: "Poppins", sans-serif;
+        font-size: clamp(1.4rem, 5vw, 1.8rem);
+        font-weight: 800;
+        color: var(--navy-dark);
+        line-height: 1.2;
+        margin-bottom: 6px;
+        letter-spacing: -0.02em;
+      }
+      .pay-sub {
+        font-size: 16px;
+        color: var(--navy);
+        font-weight: 700;
+      }
+      .countdown-box {
+        background: #eef1f9;
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 14px 16px;
+        text-align: center;
+        margin-bottom: 16px;
+        font-size: 14px;
+        font-weight: 600;
+        color: var(--navy);
+        width: 100%;
+      }
+      .detail-card {
+        background: var(--card);
+        border: 1px solid var(--border);
+        border-radius: 18px;
+        padding: 16px 18px;
+        margin-bottom: 12px;
+        box-shadow: 0 12px 30px rgba(13, 34, 70, 0.05);
+        width: 100%;
+      }
+      .detail-label {
+        font-size: 12px;
+        color: var(--muted);
+        margin-bottom: 6px;
+        font-weight: 500;
+        letter-spacing: 0.3px;
+      }
+      .detail-value {
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--navy-dark);
+        font-family: "Poppins", sans-serif;
+      }
+      .detail-value.gold { color: var(--navy); font-size: 20px; }
+      .detail-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+      }
+      .copy-btn {
+        background: var(--navy);
+        color: #fff;
+        border: none;
+        border-radius: 999px;
+        padding: 8px 18px;
+        font-size: 13px;
+        font-weight: 600;
+        cursor: pointer;
+        font-family: "Inter", sans-serif;
+        white-space: nowrap;
+        flex-shrink: 0;
+        transition: 0.2s;
+      }
+      .copy-btn:active { transform: scale(0.96); }
+      .copy-btn.copied { background: #0f5a3c; color: #fff; }
+      .benefits-box {
+        background: #eef1f9;
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 16px 18px;
+        margin: 16px 0;
+        width: 100%;
+      }
+      .benefits-box h4 {
+        font-size: 14px;
+        color: var(--navy-dark);
+        margin-bottom: 10px;
+        font-family: "Poppins", sans-serif;
+      }
+      .benefits-box ul { list-style: none; padding: 0; }
+      .benefits-box li {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 13px;
+        color: var(--muted);
+        padding: 4px 0;
+      }
+      .benefits-box li svg { width: 16px; height: 16px; flex-shrink: 0; fill: var(--navy); }
+      .done-note {
+        margin: 16px 0 20px;
+        padding: 14px 16px;
+        background: #eef1f9;
+        border: 1px solid rgba(24, 61, 142, 0.16);
+        border-radius: 16px;
+        font-size: 13px;
+        color: var(--muted);
+        line-height: 1.6;
+        text-align: center;
+        width: 100%;
+      }
+      .done-note strong { color: var(--navy); }
+      .contact-row {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 10px;
+        margin-bottom: 20px;
+        width: 100%;
+      }
+      .contact-btn {
+        height: 52px;
+        border: none;
+        border-radius: 16px;
+        font-size: 14px;
+        font-weight: 600;
+        cursor: pointer;
+        font-family: "Inter", sans-serif;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        transition: 0.25s;
+      }
+      .contact-btn:hover { transform: translateY(-2px); }
+      .contact-btn:active { transform: scale(0.97); }
+      .contact-btn.telegram { background: #229ed9; color: #fff; }
+      .contact-btn svg { width: 20px; height: 20px; fill: #fff; }
+      .pay-footer {
+        text-align: center;
+        font-size: 12px;
+        color: var(--muted2);
+        margin-top: auto;
+        padding-top: 20px;
+        line-height: 1.6;
+        width: 100%;
+      }
+      .pay-footer a { color: var(--navy); text-decoration: underline; }
+      #confirmedScreen {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: var(--bg);
+        z-index: 99999;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        padding: 40px 24px;
+        text-align: center;
+      }
+      #confirmedScreen.show { display: flex; }
+      .confirmed-icon {
+        width: 90px;
+        height: 90px;
+        border-radius: 50%;
+        background: linear-gradient(180deg, #183d8e, #0d2246);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 24px;
+        animation: popIn 0.4s ease;
+        box-shadow: 0 16px 34px rgba(24, 61, 142, 0.28);
+      }
+      @keyframes popIn {
+        from { transform: scale(0.5); opacity: 0; }
+        to { transform: scale(1); opacity: 1; }
+      }
+      .confirmed-title {
+        font-family: "Poppins", sans-serif;
+        font-size: 26px;
+        font-weight: 800;
+        margin-bottom: 10px;
+        color: var(--navy-dark);
+      }
+      .confirmed-sub {
+        font-size: 15px;
+        color: var(--muted);
+        line-height: 1.6;
+        margin-bottom: 32px;
+        max-width: 340px;
+      }
+      .confirmed-btn {
+        width: 100%;
+        max-width: 360px;
+        height: 56px;
+        background: linear-gradient(180deg, #183d8e, #0d2246);
+        color: #fff;
+        border: none;
+        border-radius: 999px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        font-family: "Inter", sans-serif;
+        box-shadow: 0 12px 26px rgba(24, 61, 142, 0.24);
+        transition: 0.25s;
+      }
+      .confirmed-btn:hover { transform: translateY(-2px); }
+    </style>
+  </head>
+  <body>
+
+    <div id="payPage">
+
+      <div class="top-section">
+        <div class="security-badge">
+          <svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4z"/></svg>
+          Secure Evermore Activation
+        </div>
+        <div class="pay-logo"><img src="favicon/apple-touch-icon.png" alt="Evermore" /></div>
+        <h1 class="pay-title">Activate Your Evermore Membership</h1>
+        <p class="pay-sub" id="amountDisplay">&#8358;15,000</p>
+      </div>
+
+      <div class="countdown-box">
+        Payment reservation expires in <span id="countdown">10:00</span>
+      </div>
+
+      <div class="detail-card">
+        <div class="detail-label">Membership Fee</div>
+        <div class="detail-value gold" id="feeDisplay">&#8358;15,000</div>
+      </div>
+
+      <div class="detail-card">
+        <div class="detail-label">Bank Name</div>
+        <div class="detail-value" id="bankNameVal">Loading...</div>
+      </div>
+
+      <div class="detail-card">
+        <div class="detail-label">Account Name</div>
+        <div class="detail-value" id="accountNameVal">Loading...</div>
+      </div>
+
+      <div class="detail-card">
+        <div class="detail-row">
+          <div>
+            <div class="detail-label">Account Number</div>
+            <div class="detail-value gold" id="accountNum">Loading...</div>
+          </div>
+          <button class="copy-btn" id="copyBtn" onclick="copyAccount()">Copy</button>
+        </div>
+      </div>
+
+      <!-- <div class="benefits-box">
+        <h4>What You Get With Your Evermore Membership</h4>
+        <ul>
+          <li><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Premium AI training tasks</li>
+          <li><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Earn up to &#8358;14,000 daily</li>
+          <li><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Unlock withdrawals from &#8358;20,000</li>
+          <li><svg viewBox="0 0 24 24"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>Lifetime access after activation</li>
+        </ul>
+      </div> -->
+
+      <div class="done-note">
+        <strong>After payment, send your proof of transfer</strong> to our support team below and your membership will be activated within <strong>5–15 minutes</strong>.
+      </div>
+
+      <div class="contact-row">
+        <button class="contact-btn telegram" id="contactBtn" onclick="contactSocial()">
+          <svg id="contactSvg" viewBox="0 0 24 24"><path d="M11.944 0A12 12 0 0 0 0 12a12 12 0 0 0 12 12 12 12 0 0 0 12-12A12 12 0 0 0 12 0a12 12 0 0 0-.056 0zm4.962 7.224c.1-.002.321.023.465.14a.506.506 0 0 1 .171.325c.016.093.036.306.02.472-.18 1.898-.962 6.502-1.36 8.627-.168.9-.499 1.201-.82 1.23-.696.065-1.225-.46-1.9-.902-1.056-.693-1.653-1.124-2.678-1.8-1.185-.78-.417-1.21.258-1.91.177-.184 3.247-2.977 3.307-3.23.007-.032.014-.15-.056-.212s-.174-.041-.249-.024c-.106.024-1.793 1.14-5.061 3.345-.48.33-.913.49-1.302.48-.428-.008-1.252-.241-1.865-.44-.752-.245-1.349-.374-1.297-.789.027-.216.325-.437.893-.663 3.498-1.524 5.83-2.529 6.998-3.014 3.332-1.386 4.025-1.627 4.476-1.635z"/></svg>
+          <span id="contactLabel">Telegram</span>
+        </button>
+      </div>
+
+      <p class="pay-footer">
+        Once your membership is activated, you can <strong>withdraw from your dashboard</strong>.<br />
+        <a href="#">Terms of Service</a> &bull; <a href="#">Privacy Policy</a>
+      </p>
+
+    </div>
+
+    <div id="confirmedScreen">
+      <div class="confirmed-icon">
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="#ffffff"><path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/></svg>
+      </div>
+      <h2 class="confirmed-title">Membership Activation Pending</h2>
+      <p class="confirmed-sub">Your payment proof has been sent. Our team will activate your Evermore membership within 5–15 minutes.</p>
+      <button class="confirmed-btn" onclick="goToDashboard()">Go to Dashboard</button>
+    </div>
+
+    <script src="assets/app.js?v=2"></script>
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+      import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyDrnmtx0LkfMKytzTKQZwXCg1JKZXiJmtU",
+        authDomain: "glamour-28049.firebaseapp.com",
+        projectId: "glamour-28049",
+        storageBucket: "glamour-28049.firebasestorage.app",
+        messagingSenderId: "22177815395",
+        appId: "1:22177815395:web:2ca7caa2b1626299675156",
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const db = getFirestore(app, "(default)");
+
+      function getPaymentData() {
+        const params = new URLSearchParams(window.location.search);
+        const plan = params.get("plan") || "membership";
+        let amount = 15000;
+        try {
+          const E = window.Evermore;
+          if (E && E.config) amount = Number(E.config().membershipPrice) || 15000;
+        } catch (e) {}
+        try {
+          const user = JSON.parse(localStorage.getItem("evermore_connect_user") || "{}");
+          return { name: user.fullName || "", email: user.email || "", phone: user.phone || "", amount, plan };
+        } catch (e) {
+          return { name: "", email: "", phone: "", amount, plan };
+        }
+      }
+
+      const paymentData = getPaymentData();
+
+      async function loadFirestoreConfig() {
+        try {
+          const snap = await getDoc(doc(db, "account", "evermorebobby"));
+          if (snap.exists()) {
+            const d = snap.data();
+            if (d.bankName) document.getElementById("bankNameVal").textContent = d.bankName;
+            if (d.accountName) document.getElementById("accountNameVal").textContent = d.accountName;
+            if (d.accountNumber) document.getElementById("accountNum").textContent = d.accountNumber;
+            if (d.telegramLink) window._tgLink = d.telegramLink;
+            if (d.whatsappLink) window._waLink = d.whatsappLink;
+            if (d.socialLink) window._socialLink = d.socialLink;
+            if (Number(d.membershipPrice)) paymentData.amount = Number(d.membershipPrice);
+          }
+        } catch (e) {
+          console.warn("Could not load Evermore config", e);
+        }
+        const fmt = "₦" + Number(paymentData.amount).toLocaleString("en-NG");
+        document.getElementById("amountDisplay").textContent = fmt;
+        document.getElementById("feeDisplay").textContent = fmt;
+        if (window._socialLink === "wa" && window._waLink) {
+          document.getElementById("contactLabel").textContent = "WhatsApp";
+        }
+      }
+
+      function goToDashboard() {
+        window.location.href = "dashboard.html";
+      }
+      window.goToDashboard = goToDashboard;
+
+      function copyAccount() {
+        const num = document.getElementById("accountNum").textContent;
+        const done = function () {
+          const btn = document.getElementById("copyBtn");
+          btn.textContent = "Copied!";
+          btn.classList.add("copied");
+          setTimeout(() => {
+            btn.textContent = "Copy";
+            btn.classList.remove("copied");
+          }, 2500);
+        };
+        navigator.clipboard.writeText(num).then(done).catch(() => {
+          const ta = document.createElement("textarea");
+          ta.value = num;
+          document.body.appendChild(ta);
+          ta.select();
+          document.execCommand("copy");
+          document.body.removeChild(ta);
+          done();
+        });
+      }
+      window.copyAccount = copyAccount;
+
+      function contactSocial() {
+        let url = window._tgLink || "https://t.me/evermoreng";
+        if (window._socialLink === "wa" && window._waLink) url = window._waLink;
+        window.open(url, "_blank");
+        document.getElementById("confirmedScreen").classList.add("show");
+      }
+      window.contactSocial = contactSocial;
+
+      let countdownTimer;
+      function startCountdown() {
+        let secs = 10 * 60;
+        clearInterval(countdownTimer);
+        countdownTimer = setInterval(() => {
+          secs--;
+          if (secs <= 0) {
+            clearInterval(countdownTimer);
+            document.getElementById("countdown").innerText = "00:00";
+            return;
+          }
+          const m = Math.floor(secs / 60).toString().padStart(2, "0");
+          const s = (secs % 60).toString().padStart(2, "0");
+          document.getElementById("countdown").innerText = m + ":" + s;
+        }, 1000);
+      }
+
+      loadFirestoreConfig();
+      startCountdown();
+    </script>
+  </body>
+</html>

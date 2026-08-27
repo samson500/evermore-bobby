@@ -1,0 +1,1064 @@
+:root {
+  --bg: #fbf8f2;
+  --surface: #ffffff;
+  --primary: #183d8e;
+  --primary-dark: #0d2246;
+  --primary-light: #1e4fa8;
+  --primary-soft: #dce6f7;
+  --gold: #e0a857;
+  --gold-dark: #b8842e;
+  --mint: #3fb47a;
+  --mint-bright: #3dfa8c;
+  --danger: #e5484d;
+  --ink: #111111;
+  --ink-soft: #4b5563;
+  --muted: #7b8087;
+  --border: #e8e7e2;
+  --shadow: 0 1px 2px rgba(13, 34, 70, 0.06), 0 8px 24px rgba(13, 34, 70, 0.08);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: var(--bg);
+  color: var(--ink);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+button,
+input,
+select,
+textarea {
+  font-family: inherit;
+  font-size: 100%;
+}
+
+button {
+  cursor: pointer;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  padding: 0.85rem 1rem;
+  background: var(--surface);
+  color: var(--ink);
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  font-size: 0.95rem;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: var(--primary-light);
+  box-shadow: 0 0 0 3px rgba(24, 61, 142, 0.12);
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: var(--muted);
+}
+
+label {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--ink-soft);
+  margin-bottom: 0.4rem;
+}
+
+.field {
+  margin-bottom: 1rem;
+}
+
+/* ---------- layout ---------- */
+
+.site-wrapper {
+  min-height: 100vh;
+}
+
+.site-main {
+  min-height: 100vh;
+}
+
+.inner {
+  max-width: 920px;
+  margin: 0 auto;
+  /* padding: 0 1.25rem 120px; */
+}
+
+/* ---------- auth screens ---------- */
+
+.gvHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 920px;
+  margin: 0 auto;
+  padding: 1.5rem 1.25rem;
+}
+
+.gvLogo {
+  display: inline-flex;
+  align-items: center;
+}
+
+.gvLogo img {
+  height: 34px;
+  width: auto;
+}
+
+.gvSigninBtn {
+  border: 1.5px solid var(--primary);
+  background: var(--surface);
+  color: var(--primary);
+  font-weight: 600;
+  font-size: 0.85rem;
+  padding: 0.55rem 1.25rem;
+  border-radius: 999px;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.gvSigninBtn:hover {
+  background: var(--primary-soft);
+}
+
+.gvHero {
+  text-align: center;
+  padding: 2.5rem 1.25rem 1.5rem;
+}
+
+.gvHero .gvEyebrow {
+  font-family: "SF Mono", ui-monospace, "JetBrains Mono", Menlo, monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--gold-dark);
+  font-weight: 700;
+}
+
+.gvHero h1 {
+  font-family: "Poppins", "Inter", sans-serif;
+  font-size: 2rem;
+  line-height: 1.15;
+  font-weight: 700;
+  color: var(--primary-dark);
+  margin-top: 0.75rem;
+}
+
+.gvHero p {
+  margin-top: 0.75rem;
+  color: var(--ink-soft);
+  font-size: 0.95rem;
+  max-width: 420px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.gvFormCard {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  box-shadow: var(--shadow);
+  max-width: 440px;
+  margin: 0 auto;
+  padding: 1.75rem;
+}
+
+.gvFormCard .gvFormTitle {
+  font-family: "Poppins", "Inter", sans-serif;
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--primary-dark);
+  margin-bottom: 1.25rem;
+}
+
+.gvSubmitBtn {
+  width: 100%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  border: none;
+  border-radius: 999px;
+  padding: 0.9rem 1.5rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #fff;
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  transition: opacity 0.15s ease, transform 0.1s ease;
+  margin-top: 0.5rem;
+}
+
+.gvSubmitBtn:active {
+  transform: scale(0.99);
+}
+
+.gvSubmitBtn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+.gvSubmitSpinner {
+  display: none;
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: gvSpin 0.7s linear infinite;
+}
+
+.gvSubmitBtn.loading .gvSubmitSpinner {
+  display: inline-block;
+}
+
+@keyframes gvSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.gvTogglePassword {
+  position: absolute;
+  right: 0.9rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 0.85rem;
+  padding: 0.2rem;
+}
+
+.gvPasswordWrap {
+  position: relative;
+}
+
+.gvFormFooter {
+  text-align: center;
+  margin-top: 1.25rem;
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+}
+
+.gvFormFooter a,
+.gvFormFooter button {
+  color: var(--primary);
+  font-weight: 600;
+  background: none;
+  border: none;
+  text-decoration: none;
+}
+
+.gvFormFooter button:hover {
+  text-decoration: underline;
+}
+
+.gvError {
+  display: none;
+  background: #fdecec;
+  color: var(--danger);
+  border: 1px solid #f5c2c4;
+  font-size: 0.82rem;
+  border-radius: 10px;
+  padding: 0.7rem 0.9rem;
+  margin-bottom: 1rem;
+}
+
+.gvError.show {
+  display: block;
+}
+
+/* ---------- screens ---------- */
+
+.gvScreen {
+  display: none;
+}
+
+.gvScreen.active {
+  display: block;
+}
+
+.gvDashHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1.5rem 0 1rem;
+}
+
+.gvDashUser {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+}
+
+.gvDashLogo {
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, var(--primary-light), var(--primary-dark));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-family: "Poppins", sans-serif;
+  font-weight: 700;
+  font-size: 1.05rem;
+  flex-shrink: 0;
+}
+
+.gvDashInfo p {
+  font-family: "Poppins", "Inter", sans-serif;
+  font-weight: 600;
+  font-size: 1.05rem;
+  color: var(--primary-dark);
+  line-height: 1.2;
+}
+
+.gvDashInfo span {
+  font-size: 0.78rem;
+  color: var(--muted);
+}
+
+/* ---------- dashboard cards ---------- */
+
+.gvCard {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+  padding: 1.25rem;
+}
+
+.gvBalanceCard {
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  border: none;
+  color: #fff;
+  border-radius: 20px;
+  padding: 1.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.gvBalanceCard::after {
+  content: "";
+  position: absolute;
+  right: -40px;
+  top: -40px;
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
+  background: rgba(224, 168, 87, 0.25);
+}
+
+.gvBalanceLabel {
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--gold);
+  font-weight: 700;
+}
+
+.gvBalance {
+  font-family: "Poppins", "Inter", sans-serif;
+  font-size: 2rem;
+  font-weight: 700;
+  margin-top: 0.4rem;
+  position: relative;
+  z-index: 1;
+}
+
+.gvBalanceCard .gvBalanceSub {
+  margin-top: 0.4rem;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.8);
+  position: relative;
+  z-index: 1;
+}
+
+.gvSectionTitle {
+  font-family: "Poppins", "Inter", sans-serif;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-weight: 700;
+  color: var(--primary-dark);
+  margin: 1.5rem 0 0.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.gvSectionTitle a,
+.gvSectionTitle button {
+  font-family: "Inter", sans-serif;
+  font-size: 0.78rem;
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--primary);
+  background: none;
+  border: none;
+  font-weight: 600;
+}
+
+/* membership status */
+.gvMemberRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.gvMemberRow:last-child {
+  border-bottom: none;
+}
+
+.gvMemberRow .gvK {
+  font-size: 0.88rem;
+  color: var(--ink-soft);
+}
+
+.gvMemberRow .gvV {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.gvBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 0.28rem 0.7rem;
+  border-radius: 999px;
+}
+
+.gvBadge.is-active {
+  background: #e3f5ec;
+  color: #0f5a3c;
+}
+
+.gvBadge.is-inactive {
+  background: #fdecec;
+  color: var(--danger);
+}
+
+.gvBadge.is-gold {
+  background: #fdf3e3;
+  color: var(--gold-dark);
+}
+
+/* tasks */
+.gvTaskCard {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  width: 100%;
+  text-align: left;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1rem;
+  margin-bottom: 0.75rem;
+  transition: box-shadow 0.15s ease, transform 0.1s ease;
+}
+
+.gvTaskCard:active {
+  transform: scale(0.99);
+}
+
+.gvTaskIcon {
+  width: 46px;
+  height: 46px;
+  border-radius: 13px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--primary-soft);
+  color: var(--primary);
+}
+
+.gvTaskIcon.gvTaskAi {
+  background: linear-gradient(135deg, var(--primary-light), var(--primary-dark));
+  color: #fff;
+}
+
+.gvTaskIcon.gvTaskText {
+  background: #fdf3e3;
+  color: var(--gold-dark);
+}
+
+.gvTaskIcon.gvTaskVision {
+  background: #e3f5ec;
+  color: #0f5a3c;
+}
+
+.gvTaskIcon.gvTaskBrand {
+  background: #f3e8fd;
+  color: #7c3aed;
+}
+
+.gvTaskInfo {
+  flex: 1;
+}
+
+.gvTaskInfo h4 {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.gvTaskInfo p {
+  font-size: 0.78rem;
+  color: var(--muted);
+  margin-top: 0.15rem;
+}
+
+.gvTaskReward {
+  font-family: "Poppins", "Inter", sans-serif;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: var(--mint);
+  text-align: right;
+}
+
+.gvTaskReward small {
+  display: block;
+  font-family: "Inter", sans-serif;
+  font-size: 0.68rem;
+  font-weight: 500;
+  color: var(--muted);
+}
+
+/* quick actions */
+.gvQuickActions {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 0.6rem;
+  margin: 1.25rem 0;
+}
+
+.gvQuickAction {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 0.9rem 0.4rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: var(--ink-soft);
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.gvQuickAction:hover {
+  border-color: var(--primary-light);
+  color: var(--primary);
+}
+
+.gvQuickIcon {
+  width: 36px;
+  height: 36px;
+  border-radius: 11px;
+  background: var(--primary-soft);
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* withdraw */
+.gvWithdrawCard {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+  padding: 1.5rem;
+  text-align: center;
+}
+
+.gvWithdrawStatus.locked {
+  background: #fdecec;
+  color: var(--danger);
+  border-radius: 12px;
+  padding: 1rem;
+  margin: 1.25rem 0;
+  font-size: 0.85rem;
+}
+
+.gvWithdrawStatus.locked .gvWithdrawStatusTitle {
+  font-weight: 700;
+  margin-bottom: 0.3rem;
+}
+
+.gvWithdrawStatus.unlocked {
+  background: #e3f5ec;
+  color: #0f5a3c;
+  border-radius: 12px;
+  padding: 1rem;
+  margin: 1.25rem 0;
+  font-size: 0.85rem;
+}
+
+.gvWithdrawStatus.unlocked .gvWithdrawStatusTitle {
+  font-weight: 700;
+  margin-bottom: 0.3rem;
+}
+
+.gvWithdrawHistoryBtn,
+.gvWithdrawBtn {
+  width: 100%;
+  border: none;
+  border-radius: 999px;
+  padding: 0.9rem 1.5rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+
+.gvWithdrawBtn {
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  color: #fff;
+  margin-top: 0.75rem;
+}
+
+.gvWithdrawHistoryBtn {
+  background: var(--primary-soft);
+  color: var(--primary);
+  margin-top: 0.75rem;
+}
+
+/* profile */
+.gvProfileCard {
+  text-align: center;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+  padding: 1.75rem 1.25rem;
+}
+
+.gvProfileAvatar {
+  width: 76px;
+  height: 76px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--primary-light), var(--primary-dark));
+  color: #fff;
+  font-family: "Poppins", sans-serif;
+  font-size: 1.8rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+}
+
+.gvProfileName {
+  font-family: "Poppins", "Inter", sans-serif;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--primary-dark);
+  margin-top: 0.9rem;
+}
+
+.gvProfileUsername {
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-top: 0.15rem;
+}
+
+.gvProfileStats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.6rem;
+  margin-top: 1.25rem;
+}
+
+.gvStatBox {
+  background: var(--bg);
+  border-radius: 12px;
+  padding: 0.85rem 0.4rem;
+}
+
+.gvStatBox strong {
+  display: block;
+  font-family: "Poppins", "Inter", sans-serif;
+  font-size: 1.1rem;
+  color: var(--primary-dark);
+}
+
+.gvStatBox span {
+  font-size: 0.7rem;
+  color: var(--muted);
+}
+
+.gvProfileTabs {
+  display: flex;
+  gap: 0.4rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 0.3rem;
+  margin: 1.25rem 0;
+}
+
+.gvProfileTab {
+  flex: 1;
+  border: none;
+  background: none;
+  border-radius: 10px;
+  padding: 0.6rem 0.4rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.gvProfileTab.active {
+  background: var(--primary);
+  color: #fff;
+}
+
+.gvProfileSection {
+  display: none;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+  padding: 1.5rem 1.25rem;
+}
+
+.gvProfileSection.active {
+  display: block;
+}
+
+.gvProfileLogout {
+  width: 100%;
+  border: 1.5px solid var(--danger);
+  background: none;
+  color: var(--danger);
+  border-radius: 999px;
+  padding: 0.85rem 1.5rem;
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin-top: 1rem;
+}
+
+/* ---------- bottom nav ---------- */
+
+.gvBottomNav {
+  position: fixed;
+  left: 50%;
+  bottom: 18px;
+  transform: translateX(-50%);
+  width: min(94%, 480px);
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  box-shadow: var(--shadow);
+  display: flex;
+  padding: 0.5rem;
+  z-index: 60;
+}
+
+.gvNavItem {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.2rem;
+  border: none;
+  background: none;
+  padding: 0.55rem 0.2rem;
+  border-radius: 16px;
+  font-size: 0.68rem;
+  font-weight: 600;
+  color: var(--muted);
+  transition: color 0.15s ease, background 0.15s ease;
+}
+
+.gvNavItem svg {
+  width: 22px;
+  height: 22px;
+}
+
+.gvNavItem.active {
+  background: var(--primary-soft);
+  color: var(--primary);
+}
+
+/* ---------- overlays / pages ---------- */
+
+.gvOverlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(13, 34, 70, 0.5);
+  z-index: 80;
+  align-items: flex-end;
+  justify-content: center;
+}
+
+.gvOverlay.active {
+  display: flex;
+}
+
+.gvOverlayCard {
+  background: var(--surface);
+  width: 100%;
+  max-width: 480px;
+  border-radius: 24px 24px 0 0;
+  padding: 1.75rem;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.gvOverlayCard .gvHandle {
+  width: 42px;
+  height: 4px;
+  border-radius: 4px;
+  background: var(--border);
+  margin: -0.5rem auto 1.25rem;
+}
+
+.gvPage {
+  display: none;
+}
+
+.gvPage.active {
+  display: block;
+}
+
+.gvPageHeader {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 1.25rem 0;
+}
+
+.gvPageHeader h2 {
+  font-family: "Poppins", "Inter", sans-serif;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--primary-dark);
+  flex: 1;
+}
+
+.gvBackBtn {
+  width: 38px;
+  height: 38px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--primary-dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* activation gate */
+.gvGateCard {
+  background: var(--surface);
+  border-radius: 20px;
+  max-width: 420px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+  text-align: center;
+  box-shadow: var(--shadow);
+}
+
+.gvGateCard .gvGateIcon {
+  width: 64px;
+  height: 64px;
+  border-radius: 18px;
+  background: #fdecec;
+  color: var(--danger);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem;
+}
+
+.gvGateCard h3 {
+  font-family: "Poppins", "Inter", sans-serif;
+  font-size: 1.2rem;
+  color: var(--primary-dark);
+}
+
+.gvGateCard p {
+  font-size: 0.88rem;
+  color: var(--ink-soft);
+  margin-top: 0.6rem;
+}
+
+/* ---------- toast ---------- */
+
+#gvToast {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%) translateY(-100px);
+  background: var(--primary-dark);
+  color: #fff;
+  padding: 0.85rem 1.4rem;
+  border-radius: 999px;
+  font-size: 0.88rem;
+  font-weight: 500;
+  box-shadow: var(--shadow);
+  z-index: 200;
+  opacity: 0;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+  max-width: 90vw;
+  text-align: center;
+}
+
+#gvToast.show {
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+
+#gvToast.success {
+  background: #106146;
+}
+
+#gvToast.error {
+  background: #b3261e;
+}
+
+/* ---------- history / lists ---------- */
+
+.gvHistoryItem {
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 0.95rem 1rem;
+  margin-bottom: 0.65rem;
+}
+
+.gvHistoryAvatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.gvHistoryInfo {
+  flex: 1;
+}
+
+.gvHistoryInfo h4 {
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.gvHistoryInfo p {
+  font-size: 0.76rem;
+  color: var(--muted);
+  margin-top: 0.1rem;
+}
+
+.gvHistoryAmount {
+  font-weight: 700;
+  font-size: 0.9rem;
+}
+
+.gvEmpty {
+  text-align: center;
+  color: var(--muted);
+  font-size: 0.85rem;
+  padding: 1.5rem 0;
+}
+
+.gvProgressBar {
+  height: 10px;
+  background: var(--border);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.gvProgressFill {
+  height: 100%;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--primary), var(--primary-light));
+  transition: width 0.4s ease;
+}
+
+/* admin */
+.gvAdminSection {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+  padding: 1.5rem 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.gvAdminSection h3 {
+  font-family: "Poppins", "Inter", sans-serif;
+  font-size: 1rem;
+  color: var(--primary-dark);
+  margin-bottom: 0.25rem;
+}
+
+.gvAdminSection .gvAdminDesc {
+  font-size: 0.8rem;
+  color: var(--muted);
+  margin-bottom: 1rem;
+}
+
+.gvSaveBtn {
+  border: none;
+  border-radius: 999px;
+  padding: 0.8rem 1.6rem;
+  font-weight: 600;
+  color: #fff;
+  background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+  margin-top: 0.5rem;
+}
+
+.gvInlineRow {
+  display: flex;
+  gap: 0.75rem;
+}
+
+.gvInlineRow .field {
+  flex: 1;
+}
+
+@media (max-width: 480px) {
+  .gvQuickActions {
+    grid-template-columns: repeat(4, 1fr);
+  }
+  .gvBalance {
+    font-size: 1.7rem;
+  }
+}

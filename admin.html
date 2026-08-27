@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en-NG">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#183D8E" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Evermore Bobby — Admin</title>
+    <link rel="icon" href="favicon/favicon.ico" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap" rel="stylesheet" />
+    <style>
+      :root {
+        --bg-white: #ffffff;
+        --bg-light: #fbf8f2;
+        --border-color: #e9ecef;
+        --text-dark: #1a1a2e;
+        --text-muted: #6c757d;
+        --navy: #183d8e;
+        --navy-dark: #0d2246;
+        --gold: #e0a857;
+        --green: #0f5a3c;
+        --danger: #dc2626;
+        --shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+        --shadow-hover: 0 8px 32px rgba(0, 0, 0, 0.1);
+      }
+      * { box-sizing: border-box; }
+      html, body { overflow-x: clip; max-width: 100%; }
+      body {
+        margin: 0;
+        font-family: "Inter", sans-serif;
+        background: var(--bg-light);
+        color: var(--text-dark);
+        min-height: 100vh;
+      }
+
+      #loginOverlay {
+        position: fixed;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: rgba(251, 248, 242, 0.98);
+        z-index: 100;
+        padding: 1rem;
+      }
+      .login-card {
+        width: min(100%, 420px);
+        padding: 2.8rem;
+        border-radius: 28px;
+        background: var(--bg-white);
+        border: 1px solid var(--border-color);
+        text-align: center;
+        box-shadow: var(--shadow-hover);
+      }
+      .login-logo {
+        width: 64px;
+        height: 64px;
+        margin: 0 auto 1.2rem;
+        border-radius: 18px;
+        background: linear-gradient(135deg, #183d8e, #0d2246);
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: "Poppins", sans-serif;
+        font-size: 26px;
+        font-weight: 800;
+        overflow: hidden;
+        box-shadow: 0 12px 30px rgba(24, 61, 142, 0.22);
+      }
+      .login-logo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+      .login-card h2 {
+        font-family: "Poppins", sans-serif;
+        font-size: 1.6rem;
+        font-weight: 800;
+        margin: 0 0 0.3rem;
+        color: var(--text-dark);
+      }
+      .login-card h2 span { color: var(--navy); }
+      .login-card p {
+        font-size: 0.88rem;
+        color: var(--text-muted);
+        margin: 0 0 1.8rem;
+      }
+      .login-input {
+        width: 100%;
+        padding: 0.9rem 1.2rem;
+        border-radius: 14px;
+        background: var(--bg-light);
+        border: 1px solid var(--border-color);
+        color: var(--text-dark);
+        font-size: 1rem;
+        font-family: "Inter", sans-serif;
+        outline: none;
+        margin-bottom: 1rem;
+        transition: border-color 0.2s;
+      }
+      .login-input:focus { border-color: var(--navy); }
+      .login-error {
+        font-size: 0.84rem;
+        color: #dc3545;
+        margin-bottom: 0.8rem;
+        min-height: 1.2em;
+      }
+      .login-btn {
+        width: 100%;
+        padding: 0.9rem;
+        border-radius: 14px;
+        background: linear-gradient(135deg, var(--navy), var(--navy-dark));
+        border: none;
+        color: #fff;
+        font-weight: 800;
+        font-size: 1rem;
+        font-family: "Inter", sans-serif;
+        cursor: pointer;
+        transition: all 0.3s;
+      }
+      .login-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(24, 61, 142, 0.3); }
+      .login-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+      #adminShell { display: none; }
+
+      .admin-header {
+        position: sticky;
+        top: 0;
+        padding: 1rem 1.8rem;
+        background: var(--bg-white);
+        border-bottom: 1px solid var(--border-color);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        z-index: 10;
+        box-shadow: var(--shadow);
+      }
+      .admin-logo {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-size: 1.25rem;
+        font-weight: 800;
+        font-family: "Poppins", sans-serif;
+        text-decoration: none;
+        color: var(--text-dark);
+      }
+      .admin-logo .admin-mark {
+        width: 34px;
+        height: 34px;
+        border-radius: 10px;
+        background: linear-gradient(135deg, #183d8e, #0d2246);
+        color: #fff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        overflow: hidden;
+      }
+      .admin-logo .admin-mark img { width: 100%; height: 100%; object-fit: cover; display: block; }
+      .admin-logo span { color: var(--navy); }
+      .admin-badge {
+        padding: 0.3rem 0.9rem;
+        border-radius: 999px;
+        background: rgba(24, 61, 142, 0.1);
+        border: 1px solid rgba(24, 61, 142, 0.2);
+        font-size: 0.75rem;
+        font-weight: 700;
+        color: var(--navy);
+      }
+      .admin-header-right { display: flex; align-items: center; gap: 12px; }
+      .save-all {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 0.5rem 1.1rem;
+        border: none;
+        border-radius: 999px;
+        background: linear-gradient(135deg, var(--navy), var(--navy-dark));
+        color: #fff;
+        font-size: 0.8rem;
+        font-weight: 700;
+        font-family: "Inter", sans-serif;
+        cursor: pointer;
+        transition: filter 0.2s, transform 0.2s;
+      }
+      .save-all svg { height: 0.875rem; width: 0.875rem; }
+      .save-all:hover { filter: brightness(1.1); transform: translateY(-1px); }
+      .save-all:disabled { opacity: 0.6; cursor: not-allowed; }
+
+      .admin-body {
+        width: min(100%, 900px);
+        margin: 0 auto;
+        padding: 2rem 1.8rem 5rem;
+      }
+      .admin-card {
+        background: var(--bg-white);
+        border: 1px solid var(--border-color);
+        border-radius: 24px;
+        padding: 1.8rem 2rem;
+        margin-bottom: 1.8rem;
+        box-shadow: var(--shadow);
+        transition: box-shadow 0.3s;
+      }
+      .admin-card:hover { box-shadow: var(--shadow-hover); }
+      .admin-card-title {
+        font-size: 0.88rem;
+        font-weight: 700;
+        color: var(--text-muted);
+        text-transform: uppercase;
+        letter-spacing: 0.09em;
+        margin-bottom: 1.4rem;
+      }
+
+      .toggle-row {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        flex-wrap: wrap;
+        background: var(--bg-light);
+        border: 1px solid var(--border-color);
+        border-radius: 14px;
+        padding: 14px 18px;
+        margin-bottom: 16px;
+      }
+      .toggle-label {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--text-dark);
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      .toggle-label small { font-weight: 400; color: var(--text-muted); font-size: 11px; }
+      .toggle-switch { position: relative; width: 48px; height: 26px; flex-shrink: 0; cursor: pointer; }
+      .toggle-switch input { opacity: 0; width: 0; height: 0; }
+      .toggle-slider {
+        position: absolute;
+        inset: 0;
+        background: #d1d5db;
+        border-radius: 999px;
+        transition: 0.3s;
+        cursor: pointer;
+      }
+      .toggle-slider::before {
+        content: "";
+        position: absolute;
+        height: 20px;
+        width: 20px;
+        left: 3px;
+        bottom: 3px;
+        background: #fff;
+        border-radius: 50%;
+        transition: 0.3s;
+      }
+      .toggle-switch input:checked + .toggle-slider { background: var(--navy); }
+      .toggle-switch input:checked + .toggle-slider::before { transform: translateX(22px); }
+      .toggle-status { font-size: 12px; font-weight: 700; min-width: 44px; color: var(--text-muted); }
+      .toggle-status.active { color: var(--green); }
+      .toggle-status.inactive { color: var(--danger); }
+
+      .link-input {
+        width: 100%;
+        padding: 0.85rem 1.2rem;
+        border-radius: 14px;
+        background: var(--bg-light);
+        border: 1px solid var(--border-color);
+        color: var(--text-dark);
+        font-size: 0.93rem;
+        font-family: "Inter", sans-serif;
+        outline: none;
+        transition: border-color 0.2s;
+      }
+      .link-input:focus { border-color: var(--navy); }
+      .link-input + .link-input, .link-input + .current-link-value, .current-link-value + .link-input { margin-top: 0.5rem; }
+      .current-link-label { font-size: 0.78rem; color: var(--text-muted); margin-bottom: 0.4rem; font-weight: 500; }
+      .current-link-value {
+        font-size: 0.85rem;
+        color: var(--text-dark);
+        word-break: break-all;
+        background: var(--bg-light);
+        border: 1px solid var(--border-color);
+        padding: 0.6rem 1rem;
+        border-radius: 10px;
+        font-family: ui-monospace, monospace;
+      }
+      .block { display: grid; gap: 0.4rem; margin-bottom: 1rem; }
+      .block:last-child { margin-bottom: 0; }
+      .divider { height: 1px; background: var(--border-color); margin: 16px 0; }
+
+      .social-pick {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        background: var(--bg-light);
+        border: 1px solid var(--border-color);
+        border-radius: 14px;
+        padding: 6px;
+      }
+      .social-opt {
+        border: none;
+        border-radius: 10px;
+        padding: 0.7rem;
+        font-size: 0.85rem;
+        font-weight: 700;
+        font-family: "Inter", sans-serif;
+        color: var(--text-muted);
+        background: transparent;
+        cursor: pointer;
+        transition: all 0.2s;
+      }
+      .social-opt.active { background: linear-gradient(135deg, var(--navy), var(--navy-dark)); color: #fff; }
+      .link-status { font-size: 0.8rem; margin-top: 0.5rem; min-height: 1.2em; color: var(--green); }
+      .link-status.error { color: var(--danger); }
+
+      .signout {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.375rem;
+        font-size: 0.8rem;
+        font-weight: 600;
+        color: var(--text-muted);
+        border: 1px solid var(--border-color);
+        border-radius: 999px;
+        padding: 0.55rem 1.4rem;
+        background: var(--bg-white);
+        cursor: pointer;
+      }
+      .signout:hover { color: var(--danger); border-color: #fecaca; background: #fee2e2; }
+      .admin-footer { display: flex; justify-content: center; margin-top: 1.5rem; }
+
+      @media (max-width: 640px) {
+        .login-card { padding: 2rem 1.4rem; }
+        .admin-header { padding: 0.85rem 1rem; }
+        .admin-logo { font-size: 1.05rem; gap: 8px; }
+        .admin-badge { display: none; }
+        .admin-body { padding: 1.2rem 1rem 3rem; }
+        .admin-card { padding: 1.2rem 1rem; border-radius: 18px; margin-bottom: 1.2rem; }
+      }
+    </style>
+  </head>
+  <body>
+
+    <div id="loginOverlay">
+      <div class="login-card">
+        <div class="login-logo"><img src="favicon/apple-touch-icon.png" alt="Evermore" /></div>
+        <h2>Admin <span>Access</span></h2>
+        <p>Enter the admin password to continue</p>
+        <input type="password" id="passwordInput" class="login-input" placeholder="Password" autocomplete="current-password" />
+        <div class="login-error" id="loginError"></div>
+        <button class="login-btn" id="loginBtn">Enter Dashboard</button>
+      </div>
+    </div>
+
+    <div id="adminShell">
+      <header class="admin-header">
+        <a href="index.html" class="admin-logo">
+          <span class="admin-mark"><img src="favicon/apple-touch-icon.png" alt="Evermore" /></span> Evermore<span>.</span>
+        </a>
+        <div class="admin-header-right">
+          <button class="save-all" id="saveAllBtn" type="button" style="display:none;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+            Save Changes
+          </button>
+        </div>
+      </header>
+
+      <div class="admin-body">
+
+        <div class="admin-card">
+          <div class="admin-card-title">Payment Account Details</div>
+          <label class="block">
+            <span class="current-link-label">Bank Name</span>
+            <input type="text" class="link-input" id="bankNameInput" placeholder="e.g. Opay" />
+          </label>
+          <label class="block">
+            <span class="current-link-label">Account Name</span>
+            <input type="text" class="link-input" id="accountNameInput" placeholder="e.g. JOHN DOE" />
+          </label>
+          <label class="block">
+            <span class="current-link-label">Account Number</span>
+            <input type="text" class="link-input" id="accountNumberInput" placeholder="e.g. 0123456789" />
+          </label>
+        </div>
+
+        <div class="admin-card">
+          <div class="admin-card-title">Payment Link Settings</div>
+          <div class="toggle-row">
+            <div class="toggle-label">
+              Enable Payment Links
+              <small>(Use payment links instead of bank transfer)</small>
+            </div>
+            <div style="display:flex;align-items:center;gap:10px;margin-left:auto;">
+              <span class="toggle-status" id="toggleStatusDisplay">OFF</span>
+              <label class="toggle-switch">
+                <input type="checkbox" id="usePaymentLinkToggle" />
+                <span class="toggle-slider"></span>
+              </label>
+            </div>
+          </div>
+          <div class="divider"></div>
+          <label class="block">
+            <span class="current-link-label">Membership Payment Link (₦15,000)</span>
+            <div class="current-link-value" id="currentPaymentLink1Display">Loading...</div>
+            <input type="url" class="link-input" id="paymentLink1Input" placeholder="https://paystack.com/pay/evermore" />
+          </label>
+          <div class="divider"></div>
+          <label class="block">
+            <span class="current-link-label">Secondary Payment Link (optional)</span>
+            <div class="current-link-value" id="currentPaymentLink2Display">Not set</div>
+            <input type="url" class="link-input" id="paymentLink2Input" placeholder="https://paystack.com/pay/evermore-2" />
+          </label>
+        </div>
+
+        <div class="admin-card">
+          <div class="admin-card-title">Social Settings</div>
+          <span class="current-link-label" style="display:block;margin-bottom:0.75rem;">Use Social</span>
+          <div class="social-pick">
+            <button type="button" class="social-opt active" data-social="tg">Telegram</button>
+            <button type="button" class="social-opt" data-social="wa">WhatsApp</button>
+          </div>
+          <div class="link-status" id="socialStatus"></div>
+        </div>
+
+        <div class="admin-card">
+          <div class="admin-card-title">Telegram Redirect Link</div>
+          <label class="block">
+            <span class="current-link-label">Current link</span>
+            <div class="current-link-value" id="currentLinkDisplay">Loading…</div>
+            <input type="url" class="link-input" id="tgLinkInput" placeholder="https://t.me/your_channel_or_group" />
+          </label>
+        </div>
+
+        <div class="admin-card">
+          <div class="admin-card-title">WhatsApp Redirect Link</div>
+          <label class="block">
+            <span class="current-link-label">Current link</span>
+            <div class="current-link-value" id="currentWALinkDisplay">Loading…</div>
+            <input type="url" class="link-input" id="waLinkInput" placeholder="https://wa.me/2348012345678" />
+          </label>
+        </div>
+
+        <div class="admin-footer">
+          <button class="signout" id="logoutBtn2">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="height:1rem;width:1rem;"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" x2="9" y1="12" y2="12"></line></svg>
+            Logout
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <script src="assets/app.js?v=2"></script>
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+      import { getFirestore, doc, getDoc, setDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyDrnmtx0LkfMKytzTKQZwXCg1JKZXiJmtU",
+        authDomain: "glamour-28049.firebaseapp.com",
+        projectId: "glamour-28049",
+        storageBucket: "glamour-28049.firebasestorage.app",
+        messagingSenderId: "22177815395",
+        appId: "1:22177815395:web:2ca7caa2b1626299675156",
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const db = getFirestore(app, "(default)");
+      const CONFIG_DOC = doc(db, "account", "evermorebobby");
+      const SESSION_KEY = "evermore_admin_unlocked";
+
+      function showToast(msg, ok) {
+        const E = window.Evermore;
+        if (E && E.showToast) { E.showToast(msg, ok !== false); return; }
+        alert(msg);
+      }
+
+      function revealAdmin() {
+        document.getElementById("loginOverlay").style.display = "none";
+        document.getElementById("adminShell").style.display = "block";
+        loadConfig();
+      }
+
+      function checkSession() {
+        if (sessionStorage.getItem(SESSION_KEY) === "1") revealAdmin();
+      }
+
+      const loginBtn = document.getElementById("loginBtn");
+      loginBtn.addEventListener("click", () => {
+        const val = document.getElementById("passwordInput").value;
+        const err = document.getElementById("loginError");
+        const E = window.Evermore;
+        const expected = E.get(E.LS.adminPass, E.DEFAULT_ADMIN_PASSWORD);
+        if (val === expected) {
+          sessionStorage.setItem(SESSION_KEY, "1");
+          err.textContent = "";
+          revealAdmin();
+        } else {
+          err.textContent = "Incorrect password. Try again.";
+          document.getElementById("passwordInput").value = "";
+        }
+      });
+      document.getElementById("passwordInput").addEventListener("keydown", (e) => {
+        if (e.key === "Enter") loginBtn.click();
+      });
+      document.getElementById("logoutBtn2").addEventListener("click", () => {
+        sessionStorage.removeItem(SESSION_KEY);
+        location.reload();
+      });
+
+      checkSession();
+
+      function updateToggleDisplay(enabled) {
+        const el = document.getElementById("toggleStatusDisplay");
+        el.textContent = enabled ? "ON" : "OFF";
+        el.className = "toggle-status " + (enabled ? "active" : "inactive");
+      }
+
+      // ── Universal Save (dirty tracking) ──
+      const SAVE_FIELDS = [
+        { key: "bankName", inputId: "bankNameInput", displayId: null, label: "Bank name", url: false },
+        { key: "accountName", inputId: "accountNameInput", displayId: null, label: "Account name", url: false },
+        { key: "accountNumber", inputId: "accountNumberInput", displayId: null, label: "Account number", url: false },
+        { key: "paymentLink1", inputId: "paymentLink1Input", displayId: "currentPaymentLink1Display", label: "Membership payment link", url: true },
+        { key: "paymentLink2", inputId: "paymentLink2Input", displayId: "currentPaymentLink2Display", label: "Secondary payment link", url: true },
+        { key: "telegramLink", inputId: "tgLinkInput", displayId: "currentLinkDisplay", label: "Telegram link", url: true },
+        { key: "whatsappLink", inputId: "waLinkInput", displayId: "currentWALinkDisplay", label: "WhatsApp link", url: true },
+      ];
+
+      let baseline = {};
+
+      function getDirtyFields() {
+        return SAVE_FIELDS.filter((f) => {
+          const val = document.getElementById(f.inputId).value.trim();
+          return val !== (baseline[f.key] || "");
+        });
+      }
+
+      function refreshSaveButton() {
+        const saveAllBtn = document.getElementById("saveAllBtn");
+        saveAllBtn.style.display = getDirtyFields().length ? "inline-flex" : "none";
+      }
+
+      SAVE_FIELDS.forEach((f) => {
+        document.getElementById(f.inputId).addEventListener("input", refreshSaveButton);
+      });
+
+      async function loadConfig() {
+        try {
+          const snap = await getDoc(CONFIG_DOC);
+          const data = snap.exists() ? snap.data() : {};
+          const E = window.Evermore;
+
+          document.getElementById("bankNameInput").value = data.bankName || "";
+          document.getElementById("accountNameInput").value = data.accountName || "";
+          document.getElementById("accountNumberInput").value = data.accountNumber || "";
+
+          const tgLink = data.telegramLink || "";
+          document.getElementById("currentLinkDisplay").textContent = tgLink || "Not set";
+          document.getElementById("tgLinkInput").value = tgLink;
+
+          const waLink = data.whatsappLink || "";
+          document.getElementById("currentWALinkDisplay").textContent = waLink || "Not set";
+          document.getElementById("waLinkInput").value = waLink;
+
+          const paymentLink1 = data.paymentLink1 || "";
+          document.getElementById("currentPaymentLink1Display").textContent = paymentLink1 || "Not set";
+          document.getElementById("paymentLink1Input").value = paymentLink1;
+
+          const paymentLink2 = data.paymentLink2 || "";
+          document.getElementById("currentPaymentLink2Display").textContent = paymentLink2 || "Not set";
+          document.getElementById("paymentLink2Input").value = paymentLink2;
+
+          const usePaymentLink = !!data.usePaymentLink;
+          document.getElementById("usePaymentLinkToggle").checked = usePaymentLink;
+          updateToggleDisplay(usePaymentLink);
+
+          const socialLink = data.socialLink || "tg";
+          document.querySelectorAll(".social-opt").forEach((b) => b.classList.toggle("active", b.dataset.social === socialLink));
+
+          if (E) E.applyRemoteConfig(data);
+
+          SAVE_FIELDS.forEach((f) => {
+            baseline[f.key] = document.getElementById(f.inputId).value;
+          });
+          refreshSaveButton();
+        } catch (err) {
+          console.error("loadConfig error:", err);
+          ["currentLinkDisplay", "currentWALinkDisplay", "currentPaymentLink1Display", "currentPaymentLink2Display"].forEach((id) => {
+            const el = document.getElementById(id);
+            if (el && /^Loading/.test(el.textContent.trim())) el.textContent = "Not set";
+          });
+        }
+      }
+
+      document.getElementById("usePaymentLinkToggle").addEventListener("change", async function () {
+        const enabled = this.checked;
+        this.disabled = true;
+        try {
+          await setDoc(CONFIG_DOC, { usePaymentLink: enabled }, { merge: true });
+          updateToggleDisplay(enabled);
+          showToast(enabled ? "Payment links enabled!" : "Payment links disabled!");
+        } catch (err) {
+          this.checked = !enabled;
+          updateToggleDisplay(!enabled);
+          showToast("Failed to save toggle state.", false);
+          console.error("Toggle save error:", err);
+        } finally {
+          this.disabled = false;
+        }
+      });
+
+      document.querySelectorAll(".social-opt").forEach((btn) => {
+        btn.addEventListener("click", async () => {
+          const val = btn.dataset.social;
+          const status = document.getElementById("socialStatus");
+          document.querySelectorAll(".social-opt").forEach((b) => b.classList.toggle("active", b === btn));
+          status.textContent = "";
+          status.className = "link-status";
+          try {
+            await setDoc(CONFIG_DOC, { socialLink: val }, { merge: true });
+            status.textContent = "Active social: " + (val === "tg" ? "Telegram" : "WhatsApp");
+            showToast("Social link set to " + (val === "tg" ? "Telegram" : "WhatsApp"));
+          } catch (err) {
+            status.textContent = "Save failed — check Firestore rules.";
+            status.className = "link-status error";
+            console.error("Social save error:", err);
+          }
+        });
+      });
+
+      document.getElementById("saveAllBtn").addEventListener("click", async () => {
+        const saveAllBtn = document.getElementById("saveAllBtn");
+        const dirty = getDirtyFields();
+        if (!dirty.length) return;
+
+        let hasError = false;
+        dirty.forEach((f) => {
+          const val = document.getElementById(f.inputId).value.trim();
+          if (f.url && val && !val.startsWith("http")) {
+            showToast(f.label + " must start with https://", false);
+            hasError = true;
+          }
+        });
+        if (hasError) return;
+
+        saveAllBtn.disabled = true;
+        saveAllBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="height:0.875rem;width:0.875rem;"><path d="M21 12a9 9 0 1 1-6.219-8.56"></path></svg> Saving…';
+
+        const updates = {};
+        dirty.forEach((f) => {
+          updates[f.key] = document.getElementById(f.inputId).value.trim();
+        });
+
+        try {
+          await setDoc(CONFIG_DOC, updates, { merge: true });
+          dirty.forEach((f) => {
+            const val = document.getElementById(f.inputId).value.trim();
+            baseline[f.key] = val;
+            if (f.displayId) {
+              document.getElementById(f.displayId).textContent = val || "Not set";
+            }
+          });
+          refreshSaveButton();
+          showToast((dirty.length === 1 ? dirty[0].label : dirty.length + " settings") + " updated!");
+        } catch (err) {
+          showToast("Save failed — check Firestore rules.", false);
+          console.error("Save error:", err);
+        } finally {
+          saveAllBtn.disabled = false;
+          saveAllBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="height:0.875rem;width:0.875rem;"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg> Save Changes';
+        }
+      });
+    </script>
+  </body>
+</html>

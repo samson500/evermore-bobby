@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 240" fill="none" role="img" aria-label="Real-time contribution dashboard illustration">
+  <style>
+    .bar { animation: barGrow 2.8s ease-in-out infinite; transform-origin: bottom; }
+    .b2 { animation-delay: .15s; } .b3 { animation-delay: .3s; } .b4 { animation-delay: .45s; } .b5 { animation-delay: .6s; }
+    .line { stroke-dasharray: 260; stroke-dashoffset: 260; animation: draw 3s ease-in-out .4s infinite alternate; }
+    .blink { animation: blink 1.8s ease-in-out infinite; }
+    @keyframes barGrow { 0%, 100% { transform: scaleY(0.7); } 50% { transform: scaleY(1); } }
+    @keyframes draw { to { stroke-dashoffset: 0; } }
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: .3; } }
+  </style>
+  <rect width="320" height="240" rx="24" fill="#0A1A38"/>
+  <rect x="28" y="36" width="264" height="12" rx="6" fill="#183D8E"/>
+  <rect x="28" y="56" width="180" height="8" rx="4" fill="#0D2246"/>
+  <g transform="translate(48 84)">
+    <rect class="bar" x="0" y="46" width="22" height="58" rx="6" fill="#183D8E"/>
+    <rect class="bar b2" x="36" y="22" width="22" height="82" rx="6" fill="#3FB47A"/>
+    <rect class="bar b3" x="72" y="38" width="22" height="66" rx="6" fill="#183D8E"/>
+    <rect class="bar b4" x="108" y="14" width="22" height="90" rx="6" fill="#3DFA8C"/>
+    <rect class="bar b5" x="144" y="30" width="22" height="74" rx="6" fill="#3FB47A"/>
+  </g>
+  <path class="line" d="M40 190 L85 160 L130 172 L175 118 L220 132 L280 96" stroke="#3DFA8C" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle class="blink" cx="280" cy="96" r="6" fill="#3DFA8C"/>
+  <path d="M40 204 H280" stroke="#0D2246" stroke-width="2"/>
+</svg>
